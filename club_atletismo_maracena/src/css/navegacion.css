@@ -1,0 +1,223 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+  }
+  
+  
+  /*----MENU HAMBURGUESA----*/
+  
+  .menu-hamburguesa{
+    display: none;
+  }
+  
+  .menu-toggle {
+    top:10px;
+    left:10px;
+    display: block;
+    position: fixed;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 400;
+  }
+  
+  .bar {
+    width: 25px;
+    height: 3px;
+    background-color: #333;
+    margin: 4px 0;
+    transition: 0.4s;
+  }
+  
+  /* Nueva clase para la cruz */
+  .cross:first-child {
+    transform: rotate(-45deg) translateY(5px);
+  }
+  
+  .cross:nth-child(2) {
+    transform: rotate(45deg) translateY(-5px);
+  }
+  
+  .cross:last-child {
+    display: none;
+  }
+  
+  
+  .menu {
+    position: fixed;
+    top: 0;
+    left: -250px;
+    width: 250px;
+    height: 100%;
+    background-color: #575757a7;
+    padding-top: 60px;
+    transition: 0.4s;
+    z-index: 300;
+  }
+  
+  .menu ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .menu ul li {
+    padding: 15px;
+    border-bottom: 1px solid #ccc;
+    transition: opacity 0.4s; /* Agregamos transición de opacidad */
+  }
+  
+  .menu ul li a {
+    text-transform: uppercase;
+    font-family: 'Montserrat', sans-serif;
+    text-decoration: none;
+    color: #ffffff;
+  }
+  
+  .menu ul ul {
+    display: none;
+  }
+  
+  .menu ul ul.active {
+    display: block;
+  }
+  
+  .menu ul ul li {
+    padding-left: 20px;
+  }
+  
+  .back-button {
+    position: relative;
+    padding: 5px;
+    top: -40px;
+    left: 160px;
+    cursor: pointer;
+    display: none;
+    color:white;
+    border:1px solid white;
+    width: fit-content;
+  }
+  
+  .menu.active {
+    left: 0;
+  }
+  
+  .menu .active {
+    display: block;
+  }
+  
+  .level-1.inactive {
+    opacity: 0; /* Cambiamos display por opacidad */
+    pointer-events: none; /* Evita interacción con elementos ocultos */
+  }
+  
+  /*-----FIN DEL MENU HAMBURGUESA------*/
+  
+  
+  /*-----MENU HORIZONTAL------*/
+  .menu-horizontal {
+    background-color: #333;
+    color: white;
+  }
+  
+  .menu-horizontal nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    text-transform: uppercase;
+  }
+  
+  .menu-horizontal nav ul li {
+    margin-right: 30px;
+    color: white;
+    position: relative;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .menu-horizontal nav ul li::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 3px;
+    background-color: white;
+    transition: width 0.3s ease-in-out;
+  }
+  
+  .menu-horizontal nav ul li:hover::after {
+    width: 100%; 
+  }
+  
+  .menu-horizontal nav ul li:last-child {
+    margin-right: 0;
+  }
+  
+  .menu-horizontal nav ul li a {
+    text-decoration: none;
+    color: #fff;
+    padding: 10px;
+    display: inline-block;
+  }
+  
+  .menu-horizontal nav ul li:hover {
+    background-color: #555;
+  }
+  
+  .menu-horizontal nav ul li.has-submenu:hover > .submenu {
+    display: block;
+  }
+  
+  .menu-horizontal nav ul .submenu {
+    display: none;
+    position: absolute;
+    background-color: #444;
+    padding: 10px;
+  }
+  
+  .menu-horizontal nav ul .submenu li {
+    margin: 0;
+    padding: 0;
+    margin-top: 10px;
+  }
+  
+  .menu-horizontal nav ul .submenu li a {
+    color: #fff;
+    text-decoration: none;
+  }
+  
+  .menu-horizontal nav ul .submenu li:hover {
+    background-color: #666;
+    
+  }
+  
+  
+  
+  @media only screen and (max-width: 1033px) {
+    .menu-hamburguesa{
+      display: block;
+    }
+    .menu-horizontal{
+      display:none
+    }
+  }
+  
+  
+  
+  
+  #logo{
+    height: fit-content;
+    width: 70px;
+  }
+  
+  .menu-horizontal nav{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    height: 100px;
+  }
+  
+  .menu-horizontal #inicio{
+    display: flex;
+    align-items: center;
+    column-gap: 20px;
+  }
