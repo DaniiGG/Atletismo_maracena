@@ -26,13 +26,9 @@ const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<><Navegacion /><App /></>} />
-      {/* <Route path="pokemon" element={<><Navegacion /><Pokemon /><Footer /></>} />
-      <Route path="detalles/:id" element={<><Navegacion /><Detalles /><Footer /></>} />
-      <Route path="minijuego" element={user ? (
-        <><Navegacion /><Minijuego /><Footer /></>
-      ) : (
-        <><Navegacion /><Login /><Footer /></>
-      )} />
+      {/* <Route path="club" element={<><Navegacion /><Club /><Footer /></>} />
+      <Route path="inscripcion" element={<><Navegacion /><Inscripcion /><Footer /></>} />
+      <Route path="noticias" element={<><Navegacion /><Noticias /><Footer /></>} />
       <Route path="login" element={<><Navegacion /><Login /><Footer /></>} />
       <Route path="register" element={<><Navegacion /><Register /><Footer /></>} /> */}
       <Route path="*" element={<PageNotFound />} />
@@ -40,8 +36,14 @@ const AppRoutes = () => {
   );
 };
 
-createRoot(document.getElementById("root")).render(
-  <Router>
-    <AppRoutes />
-  </Router>
-);
+
+const rootElement = document.getElementById('root');
+if (rootElement) {
+  createRoot(rootElement).render(
+    <Router>
+      <AppRoutes />
+    </Router>
+  );
+} else {
+  console.error('No se encontró el elemento raíz (root) en el DOM.');
+}
