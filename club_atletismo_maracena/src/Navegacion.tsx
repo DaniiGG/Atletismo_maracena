@@ -2,12 +2,12 @@ import { useState, useEffect, useRef } from 'react';
 import $ from 'jquery';
 import './css/navegacion.css'
 import { getAuth, onAuthStateChanged, signOut as firebaseSignOut } from "firebase/auth";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { User } from 'firebase/auth';
 
 function Navegacion() {
     
-    
+    const location = useLocation();
     const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
@@ -31,6 +31,7 @@ function Navegacion() {
       firebaseSignOut(auth).then(() => {
         // Sign-out successful.
       }).catch((error) => {
+        console.error('Error:', error);
         // An error happened.
       });
     }
@@ -137,8 +138,8 @@ function Navegacion() {
               <li>
                 
               </li>
-              <li><Link to="/club">Club</Link></li>
-              <li className="has-submenu">
+              <li className={location.pathname === "/club" ? "active" : ""}><Link to="/club">Club</Link></li>
+              <li  className={"has-submenu " + (location.pathname === "/inscripcion" ? "active" : "")}>
                 <Link to="/inscripcion">Inscríbete</Link>
                 <ul className="submenu">
                   <li className="has-submenu">
@@ -148,7 +149,7 @@ function Navegacion() {
                   <li><a href="#">Servicio 3</a></li>
                 </ul>
               </li>
-              <li className="has-submenu">
+              <li className={"has-submenu " + (location.pathname === "/noticias" ? "active" : "")}>
                 <Link to="/noticias">Noticias</Link>
                 <ul className="submenu">
                   <li><a href="#">Producto 1</a></li>
@@ -156,8 +157,8 @@ function Navegacion() {
                   <li><a href="#">Producto 3</a></li>
                 </ul>
               </li>
-              <li><Link to="/galeria">Galería de fotos</Link></li>
-              <li><Link to="/contacto">Contacto</Link></li>
+              <li className={location.pathname === "/galeria" ? "active" : ""}><Link to="/galeria">Galería de fotos</Link></li>
+              <li className={location.pathname === "/contacto" ? "active" : ""}><Link to="/contacto">Contacto</Link></li>
               <li> {user ? (
                     <div>
                         <span className="user">Bienvenido, {user.displayName ? user.displayName : user.email}</span>

@@ -21,7 +21,7 @@ function Login() {
             .then((result) => {
                 const credential = GoogleAuthProvider.credentialFromResult(result);
                 if (credential !== null) {
-                    const token = credential.accessToken;
+                    //const token = credential.accessToken;
                     const user = result.user;
                     console.log("Hola " + user.displayName);
                     navigate("/");

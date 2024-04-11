@@ -50,58 +50,59 @@ footer > div{
     padding-top: 50px;
 }
 
-/* #logo{
-    height: fit-content;
-    width: 70px;
-  }
-  
-  #inicio{
-    display: flex;
-    align-items: center;
-    column-gap: 20px;
-    color:white
-  } */
+#logo{
+  height: fit-content;
+  width: 60px;
+}
 
-  .patrocinadores{
-    display: flex;
-    flex-direction: column;
-    margin-top: 0;
-  }
-  .patrocinadores img{
-    max-width: 10vw;
-  }
 
-  .subfooter{
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    color: white;
-    margin-top: 0;
-    background-color: #1f1f1f;
-    padding: 20px;
-    border-top: solid 1px rgb(69, 68, 68);
-    padding-left: 10vw;
-    padding-right: 10vw;
-    font-family: "Montserrat", sans-serif;
-    font-weight: 200;
-    font-size:smaller;
-  }
-  .subfooter p{
-    margin-bottom: 0;
-  }
+.subfooter #inicio{
+  display: flex;
+  align-items: center;
+  column-gap: 20px;
+}
 
-  i{
-    transition: all 0.3s ease;
-  }
-  i:first-child:hover{
-    color:#0866ff;
-    transform: scale(1.15);
-  }
+.patrocinadores{
+  display: flex;
+  flex-direction: column;
+  margin-top: 0;
+}
+.patrocinadores img{
+  max-width: 10vw;
+}
 
-  i:last-child:hover {
-    color:  #fb57d2; /* Change text color to ensure visibility */
-    transform: scale(1.15);
+.subfooter{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  margin-top: 0;
+  background-color: #1f1f1f;
+  padding: 20px;
+  border-top: solid 1px rgb(69, 68, 68);
+  padding-left: 10vw;
+  padding-right: 10vw;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 200;
+  font-size:smaller;
+}
+.subfooter p{
+  margin-bottom: 0;
+}
+
+footer i{
+  transition: all 0.3s ease;
+}
+footer i:first-child:hover{
+  color:#0866ff;
+  transform: scale(1.15);
+}
+
+footer i:last-child:hover {
+  color:  #fb57d2; /* Change text color to ensure visibility */
+  transform: scale(1.15);
 }
 
 a{
@@ -109,6 +110,6 @@ transition: all 0.2s ease;
 }
 
 a:hover{
-  color: #0866ff;
+color: #0866ff;
 }
   

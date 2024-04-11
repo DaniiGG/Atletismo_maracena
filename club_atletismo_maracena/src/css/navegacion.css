@@ -114,8 +114,11 @@ body {
   
   /*-----MENU HORIZONTAL------*/
 
+  .menu-horizontal .active{
+    border-bottom: 2px solid white;
+  }
+
   .menu-scroll {
-    background-color: red; /* Color de fondo rojo cuando se desplaza */
     transition: background-color 0.3s ease; /* Transición suave */
   }
   .menu-horizontal {

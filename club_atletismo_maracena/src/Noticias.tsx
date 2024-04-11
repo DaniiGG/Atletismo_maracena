@@ -28,6 +28,7 @@ function Noticias() {
     fecha: '', 
     destacada: false,
   });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -49,12 +50,12 @@ function Noticias() {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
-      // Subir la imagen al almacenamiento de Firebase
+      
       const storageRef = ref(storage, `imagenes/${file.name}`);
       uploadBytes(storageRef, file).then((snapshot) => {
         console.log('Imagen subida correctamente');
-        // Obtener la URL de descarga de la imagen
-        getDownloadURL(snapshot.ref).then((url: string) => { // Especificamos el tipo de 'url' como string
+        
+        getDownloadURL(snapshot.ref).then((url: string) => {
           setNuevaNoticia({ ...nuevaNoticia, imagen: url });
         });
       }).catch((error) => {
@@ -101,6 +102,7 @@ function Noticias() {
         // Encontrar la noticia destacada más reciente
         const destacadaReciente = datosObtenidos.find((dato) => dato.destacada);
         setDestacada(destacadaReciente || null);
+        setLoading(false);
       } catch (error) {
         console.error('Error al obtener los datos:', error);
       }
@@ -113,14 +115,37 @@ function Noticias() {
     setShowForm(!showForm);
   };
 
+
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    setLoaded(true);
+  }, []);
+
   return (
     <>
       <div className='fotoInicial'>
         <img src='../img/imagen-slider3.png' alt='Imagen inicial'></img>
       </div>
+      <div className={`main-title ${loaded ? 'loaded' : ''}`}>
+      <h1 id="title">Noticias del club</h1><br></br>
+      <p id="subtitle">¡Mantente al tanto de todas las novedades, eventos y logros de nuestro club!</p>
+      </div>
       <section>
+      {loading ? ( // Preloader si está cargando
+          <div className="preloader">
+            <div className="loading-wave">
+              <div className="loading-bar"></div>
+              <div className="loading-bar"></div>
+              <div className="loading-bar"></div>
+              <div className="loading-bar"></div>
+            </div>
+          </div>
+        ) : (
+          <>
         {destacada && (
           <article className='destacada'>
+            <div className='rectangulo'></div>
             <h2>Noticia Destacada</h2>
             <div className='flex-destacada'>
               <div className='destacada'>
@@ -139,6 +164,7 @@ function Noticias() {
         )}
 
         <article className='hazañas'>
+        <div className='rectangulo'></div>
           <h2>Noticias del club</h2>
           <div className='flex-hazañas'>
             {datos.map((dato, index) => (
@@ -210,6 +236,8 @@ function Noticias() {
           )}
         </>
       )}
+      </>
+        )}
       </section>
     </>
   );

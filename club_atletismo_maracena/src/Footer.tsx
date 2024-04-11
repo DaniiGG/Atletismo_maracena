@@ -78,6 +78,10 @@ function Footer() {
 
             </div>
             <div className='subfooter'>
+                <div id="inicio">
+                    <img id="logo" src="../img/logoAtletismo.png"></img>
+                    <Link to="/">CLUB ATLETISMO <br/><b>MARACENA</b></Link>
+                </div>
                 <div>
                     <p><Link to="">Aviso legal</Link>&nbsp;|&nbsp;<Link to="">Política de cookies</Link>&nbsp;|&nbsp;<Link to="">Política de privacidad</Link></p>
                 </div>
