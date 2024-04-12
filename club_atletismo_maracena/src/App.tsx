@@ -55,19 +55,19 @@ function App() {
           </div>
           <div className="carousel-inner">
             <div className="carousel-item active">
-              <img src="../img/pistaAtletismo.jpeg" className="d-block w-100 vh-100" alt="..." />
+              <img src="../img/pistaAtletismo.jpeg" className="d-block w-100" alt="..." />
               <div className="carousel-caption d-none d-md-block animate__animated animate__fadeIn">
                 <h5 className="animate__animated animate__fadeInDown">First slide label</h5>
               </div>
             </div>
             <div className="carousel-item">
-              <img src="../img/imagen-slider2.jpg" className="d-block w-100 vh-100" alt="..." />
+              <img src="../img/imagen-slider2.jpg" className="d-block w-100" alt="..." />
               <div className="carousel-caption d-none d-md-block animate__animated animate__fadeIn">
               <h5 className="animate__animated animate__fadeInDown">Second slide label</h5>
               </div>
             </div>
             <div className="carousel-item">
-              <img src="../img/imagen-medalla-sierraB.jpg" className="d-block w-100 vh-100" alt="..." />
+              <img src="../img/imagen-medalla-sierraB.jpg" className="d-block w-100" alt="..." />
               <div className="carousel-caption d-none d-md-block animate__animated animate__fadeIn">
               <h5 className="animate__animated animate__fadeInDown">Third slide label</h5>
               <p className="animate__animated animate__fadeInDown">Estamos a full</p>

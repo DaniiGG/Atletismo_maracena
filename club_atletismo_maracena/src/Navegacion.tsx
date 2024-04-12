@@ -61,7 +61,7 @@ function Navegacion() {
 
 
     useEffect(() => {
-        $(document).ready(function(){
+        $(function(){
           
           var currentLevel = 1; 
     
