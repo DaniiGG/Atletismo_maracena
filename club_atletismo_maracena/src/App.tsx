@@ -98,12 +98,12 @@ function App() {
               <div key={index} className="hazaña">
                 <div className='imagen-hazaña'  onClick={() => handleImagenClick(index)}>
                 <img src={dato.imagen} alt={dato.etiqueta}></img>
-                <p>{dato.etiqueta}</p>
+                <p className='etiqueta'>{dato.etiqueta}</p>
                 <div className='lupa'> <i className="fa-solid fa-magnifying-glass fa-2xl"></i></div>
                 </div>
                 <h5>{dato.titulo}</h5>
-                <p>{dato.contenido.length > 100 ? dato.contenido.slice(0, 130) + '...' : dato.contenido}</p>
-                <p><b>{new Date(dato.fecha.seconds * 1000).toLocaleDateString()}</b></p>
+                <p className='content'>{dato.contenido.length > 100 ? dato.contenido.slice(0, 150) + '...' : dato.contenido}</p>
+                <p className='content'><b>{new Date(dato.fecha.seconds * 1000).toLocaleDateString()}</b></p>
               </div>
             ))}
           </div>

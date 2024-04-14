@@ -131,7 +131,7 @@ function Noticias() {
       <h1 id="title">Noticias del club</h1><br></br>
       <p id="subtitle">¡Mantente al tanto de todas las novedades, eventos y logros de nuestro club!</p>
       </div>
-      <section>
+      <section className='hazañas-section'>
       {loading ? ( // Preloader si está cargando
           <div className="preloader">
             <div className="loading-wave">
@@ -144,20 +144,20 @@ function Noticias() {
         ) : (
           <>
         {destacada && (
-          <article className='destacada'>
+          <article className='hazañas'>
             <div className='rectangulo'></div>
             <h2>Noticia Destacada</h2>
             <div className='flex-destacada'>
-              <div className='destacada'>
                 <div className='imagen-destacada'>
                   <img src={destacada.imagen} alt={destacada.etiqueta}></img>
                   <p>{destacada.etiqueta}</p>
                 </div>
-                <h5>{destacada.titulo}</h5>
-                <p>{destacada.contenido.length > 100 ? destacada.contenido.slice(0, 130) + '...' : destacada.contenido}</p>
-                <p>
-                  <b>{new Date(destacada.fecha.seconds * 1000).toLocaleDateString()}</b>
-                </p>
+                <div className='contenido-destacada'>
+                  <h5>{destacada.titulo}</h5>
+                  <p>{destacada.contenido.length > 100 ? destacada.contenido.slice(0, 130) + '...' : destacada.contenido}</p>
+                  <p>
+                    <b>{new Date(destacada.fecha.seconds * 1000).toLocaleDateString()}</b>
+                  </p>
               </div>
             </div>
           </article>
@@ -171,11 +171,12 @@ function Noticias() {
               <div key={index} className='hazaña'>
                 <div className='imagen-hazaña'>
                   <img src={dato.imagen} alt={dato.etiqueta}></img>
-                  <p>{dato.etiqueta}</p>
+                  <p className='estiqueta'>{dato.etiqueta}</p>
+                  <div className='lupa'> <i className="fa-solid fa-magnifying-glass fa-2xl"></i></div>
                 </div>
                 <h5>{dato.titulo}</h5>
-                <p>{dato.contenido.length > 100 ? dato.contenido.slice(0, 130) + '...' : dato.contenido}</p>
-                <p>
+                <p className='content'>{dato.contenido.length > 100 ? dato.contenido.slice(0, 130) + '...' : dato.contenido}</p>
+                <p className='content'>
                   <b>{new Date(dato.fecha.seconds * 1000).toLocaleDateString()}</b>
                 </p>
               </div>

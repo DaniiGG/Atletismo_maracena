@@ -49,13 +49,6 @@ function Footer() {
                     </div>
                 </div>
             
-                <div>
-                    
-                    <h6>Síguenos</h6>
-                    <i className="fa-brands fa-square-facebook fa-2xl"></i>&nbsp;&nbsp;&nbsp;
-                    <i className="fa-brands fa-instagram fa-2xl"></i>
-                    
-                </div>
 
                 <div>
 
@@ -78,14 +71,20 @@ function Footer() {
 
             </div>
             <div className='subfooter'>
+                <div className="subfooter-parte1">
                 <div id="inicio">
                     <img id="logo" src="../img/logoAtletismo.png"></img>
                     <Link to="/">CLUB ATLETISMO <br/><b>MARACENA</b></Link>
                 </div>
+                    <div className="redes2">
+                        <i className="fa-brands fa-square-facebook fa-2xl"></i>&nbsp;&nbsp;&nbsp;
+                        <i className="fa-brands fa-instagram fa-2xl"></i>
+                    </div>
+                </div>
                 <div>
                     <p><Link to="">Aviso legal</Link>&nbsp;|&nbsp;<Link to="">Política de cookies</Link>&nbsp;|&nbsp;<Link to="">Política de privacidad</Link></p>
                 </div>
-                <div>
+                <div className="redes">
                     <i className="fa-brands fa-square-facebook fa-2xl"></i>&nbsp;&nbsp;&nbsp;
                     <i className="fa-brands fa-instagram fa-2xl"></i>
                 </div>
