@@ -108,12 +108,19 @@ footer i:last-child:hover {
   transform: scale(1.15);
 }
 
-a{
+footer a{
 transition: all 0.2s ease;
+text-decoration: none;
 }
 
-a:hover{
-color: #0866ff;
+footer a:hover{
+color: #0866ff !important;
+}
+footer a:link{
+  color: white;
+}
+footer a:visited{
+  color: white;
 }
   
 

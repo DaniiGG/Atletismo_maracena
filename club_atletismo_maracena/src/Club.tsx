@@ -13,7 +13,7 @@ function Club() {
   return (
     <> 
       <div className='fotoInicial'>
-        <img src="../img/imagen-slider3.png"></img>
+        <img src="../img/imagen-slider3.png" loading="lazy" alt="imagen de inicio"></img>
       </div>
       <div className={`main-title ${loaded ? 'loaded' : ''}`}>
       <h1 id="title">Nuestro club</h1><br></br>

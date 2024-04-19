@@ -29,6 +29,7 @@ function Noticias() {
     destacada: false,
   });
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -122,10 +123,14 @@ function Noticias() {
     setLoaded(true);
   }, []);
 
+  const filteredData = datos.filter((dato) =>
+    dato.titulo.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <>
       <div className='fotoInicial'>
-        <img src='../img/imagen-slider3.png' alt='Imagen inicial'></img>
+        <img src='../img/imagen-slider3.png' loading="lazy" alt='Imagen inicial'></img>
       </div>
       <div className={`main-title ${loaded ? 'loaded' : ''}`}>
       <h1 id="title">Noticias del club</h1><br></br>
@@ -154,7 +159,7 @@ function Noticias() {
                 </div>
                 <div className='contenido-destacada'>
                   <h5>{destacada.titulo}</h5>
-                  <p>{destacada.contenido.length > 100 ? destacada.contenido.slice(0, 130) + '...' : destacada.contenido}</p>
+                  <p>{destacada.contenido}</p>
                   <p>
                     <b>{new Date(destacada.fecha.seconds * 1000).toLocaleDateString()}</b>
                   </p>
@@ -163,11 +168,17 @@ function Noticias() {
           </article>
         )}
 
+        <input
+        type="text"
+        placeholder="Buscar por título..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        />
         <article className='hazañas'>
         <div className='rectangulo'></div>
           <h2>Noticias del club</h2>
           <div className='flex-hazañas'>
-            {datos.map((dato, index) => (
+            {filteredData.map((dato, index) => (
               <div key={index} className='hazaña'>
                 <div className='imagen-hazaña'>
                   <img src={dato.imagen} alt={dato.etiqueta}></img>

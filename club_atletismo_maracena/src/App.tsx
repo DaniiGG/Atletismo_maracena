@@ -16,9 +16,7 @@ interface Hazaña {
 }
 
 function App() {
-
   const [datos, setDatos] = useState<Hazaña[]>([]);
-
   const [imagenFullscreen, setImagenFullscreen] = useState<number | null>(null);
 
   const handleImagenClick = (index: number) => {
@@ -44,6 +42,13 @@ function App() {
     obtenerDatos();
   }, []);
 
+  useEffect(() => {
+    const tooltips = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltips.forEach((tooltip) => {
+        new window.bootstrap.Tooltip(tooltip);
+    });
+}, []);
+
   return (
     <>
       <header>
@@ -55,20 +60,21 @@ function App() {
           </div>
           <div className="carousel-inner">
             <div className="carousel-item active">
-              <img src="../img/pistaAtletismo.jpeg" className="d-block w-100" alt="..." />
-              <div className="carousel-caption d-none d-md-block animate__animated animate__fadeIn">
-                <h5 className="animate__animated animate__fadeInDown">First slide label</h5>
+              <img src="../img/pistaAtletismo.jpeg" className="d-block w-100" loading="lazy" alt="Pista de atletismo" />
+              <div className="carousel-caption d-md-block animate__animated animate__fadeIn">
+                <h5 className="animate__animated animate__fadeInDown">Bienvenido a</h5>
+                <p>Club Atletismo Maracena</p>
               </div>
             </div>
             <div className="carousel-item">
-              <img src="../img/imagen-slider2.jpg" className="d-block w-100" alt="..." />
-              <div className="carousel-caption d-none d-md-block animate__animated animate__fadeIn">
+              <img src="../img/imagen-slider2.jpg" className="d-block w-100" loading="lazy" alt="Fin de carrera" />
+              <div className="carousel-caption d-md-block animate__animated animate__fadeIn">
               <h5 className="animate__animated animate__fadeInDown">Second slide label</h5>
               </div>
             </div>
             <div className="carousel-item">
-              <img src="../img/imagen-medalla-sierraB.jpg" className="d-block w-100" alt="..." />
-              <div className="carousel-caption d-none d-md-block animate__animated animate__fadeIn">
+              <img src="../img/imagen-medalla-sierraB.jpg" className="d-block w-100" loading="lazy" alt="Tercera foto" />
+              <div className="carousel-caption d-md-block animate__animated animate__fadeIn">
               <h5 className="animate__animated animate__fadeInDown">Third slide label</h5>
               <p className="animate__animated animate__fadeInDown">Estamos a full</p>
               </div>
@@ -85,9 +91,6 @@ function App() {
         </div>
       </header>
       <section className='hazañas-section'>
-        {/* <article className='banner'>
-        </article> */}
-        
         <article className='hazañas'>
           <div className='rectangulo'></div>
           <h2>
@@ -107,7 +110,6 @@ function App() {
               </div>
             ))}
           </div>
-
         </article>
         {imagenFullscreen !== null && (
         <div className="fullscreen-overlay" onClick={handleCloseFullscreen}>
@@ -121,15 +123,95 @@ function App() {
       <section className='valores-section'>
         <article className='valores'>
         <div className='rectangulo'></div>
-          <h2>
+          <h2 id="valores-title">
             Nuestros valores
           </h2>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus a sem in neque hendrerit efficitur nec ac mi. Sed in sapien vel enim ultrices facilisis non in dolor. Mauris rhoncus dui vel odio commodo vehicula varius convallis mauris. Ut condimentum magna et ante pretium ornare. Etiam lacinia ex quis mi tristique scelerisque et id eros. Vivamus sollicitudin ullamcorper eros et dictum. Suspendisse a ligula et mauris dapibus fermentum at sagittis nunc. Nullam sit amet lacus nulla. Ut sit amet lobortis est. In tristique consectetur nisi non aliquam. Vivamus erat velit, venenatis a nunc et, maximus commodo justo.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus a sem in neque hendrerit efficitur nec ac mi. Sed in sapien vel enim ultrices facilisis non in dolor. Mauris rhoncus dui vel odio commodo vehicula varius convallis mauris. Ut condimentum magna et ante pretium ornare. Etiam lacinia ex quis mi tristique scelerisque et id eros. Vivamus sollicitudin ullamcorper eros et dictum. Suspendisse a ligula et mauris dapibus fermentum at sagittis nunc. Nullam sit amet lacus nulla. Ut sit amet lobortis est. In tristique consectetur nisi non aliquam. Vivamus erat velit, venenatis a nunc et, maximus commodo justo.</p>
-        </article>
+          <div className='valores-content'>
+            <p>En el Club Atletismo Maracena, nos enorgullece ser más que un simple lugar de entrenamiento. Somos una familia unida por nuestra pasión por el atletismo y nuestra dedicación a valores que trascienden las fronteras de la pista. En nuestro club, cada atleta, entrenador y miembro del personal encuentra un hogar donde el compañerismo, el respeto y la superación personal son fundamentales en cada paso que damos juntos. Desde los jóvenes que dan sus primeros pasos en la pista hasta los atletas más experimentados que buscan alcanzar nuevas metas, todos son acogidos con los brazos abiertos en un ambiente donde la excelencia deportiva va de la mano con el crecimiento personal y el apoyo mutuo. Aquí, en el corazón del Club Atletismo Maracena, nuestros valores son más que palabras; son la esencia misma de lo que somos y de lo que aspiramos a ser como comunidad deportiva.</p>
 
+          <div className="valores-parte2">
+            <div className='slider'>
+            <div id="carouselExample" className="carousel slide" data-bs-ride="carousel">
+              <div className="carousel-inner ">
+                <div className="carousel-item active">
+                  <img src="../img/trabajo_en_equipo.png" className="d-block w-100" alt="Trabajo en equipo"/>
+                </div>
+                <div className="carousel-item">
+                  <img src="../img/trabajo_en_equipo.png" className="d-block w-100" alt="..."/>
+                </div>
+                {/* <div className="carousel-item">
+                <video src="../img/prueba.mp4" className="d-block w-100" autoPlay loop></video>
+                </div> */}
+                <div className="carousel-item">
+                  <img src="../img/pistaAtletismo.jpeg" className="d-block w-100" alt="..."/>
+                </div>
+              </div>
+              <button className="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span className="visually-hidden">Previous</span>
+              </button>
+              <button className="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                <span className="visually-hidden">Next</span>
+              </button>
+            </div>
+            </div>
+
+            <div className='conjunto-valores'>
+            <div className="skill-element" data-bs-toggle="tooltip" title="La capacidad de entrenar y competir en equipo para alcanzar los objetivos del club y celebrar los logros juntos.">
+                <div className="progress-container">
+                    <span>
+                        <i className="fa-solid fa-people-group"></i>
+                    </span>
+                </div>
+                <p>Trabajo en equipo</p>
+            </div>
+            <div className="skill-element" data-bs-toggle="tooltip" title="El respeto hacia los compañeros de equipo, entrenadores, competidores y los valores del deporte, promoviendo un ambiente positivo y de colaboración.">
+                <div className="progress-container">
+                    <span>
+                        <i className="fas fa-handshake"></i>
+                    </span>
+                </div>
+                <p>Respeto</p>
+            </div>
+            <div className="skill-element" data-bs-toggle="tooltip" title="El control de uno mismo y la capacidad de mantener el enfoque y cumplir con las responsabilidades y expectativas establecidas.">
+                <div className="progress-container">
+                    <span>
+                        <i className="fas fa-clock"></i>
+                    </span>
+                </div>
+                <p>Disciplina</p>
+            </div>
+            <div className="skill-element" data-bs-toggle="tooltip" title="La pasión por el deporte y la emoción de competir que impulsa a los miembros del club a dar lo mejor de sí mismos en cada entrenamiento y competición.">
+                <div className="progress-container">
+                    <span>
+                        <i className="fa-solid fa-heart-pulse"></i>
+                    </span>
+                </div>
+                <p>Pasión</p>
+            </div>
+            <div className="skill-element" data-bs-toggle="tooltip" title="El compromiso con la integridad, la honestidad y los valores éticos del deporte en todas las actividades y competiciones del club.">
+                <div className="progress-container">
+                    <span>
+                        <i className="fas fa-balance-scale"></i>
+                    </span>
+                </div>
+                <p>Ética</p>
+            </div>
+            <div className="skill-element" data-bs-toggle="tooltip" title="La determinación para superar obstáculos, alcanzar nuevas metas y desafiarse a sí mismo para alcanzar el máximo potencial en el atletismo y en la vida.">
+                <div className="progress-container">
+                    <span>
+                        <i className="fa-solid fa-arrow-trend-up"></i>
+                    </span>
+                </div>
+                <p>Superación</p>
+            </div>
+            </div>
+            </div>
+          </div>
+        </article>
       </section>
     </>
-
   );
 }
 

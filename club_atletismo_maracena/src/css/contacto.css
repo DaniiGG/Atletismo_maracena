@@ -1,4 +1,4 @@
-#all-form{
+/* #all-form{
     margin-left: 30%;
     width: 40%;
 }
@@ -29,7 +29,6 @@
     background: transparent;
     border-left: 3px solid var(--Negro);
     border-bottom: 3px solid var(--Negro);
-    border-radius: 10px;
     transition: 0.1s;
 }
 
@@ -59,7 +58,6 @@
     letter-spacing: 0.2em;
     color: var(--Negro);
     border: 2px;
-    border-radius: 10px;
 }
 
 .inputBox input:valid,
@@ -67,14 +65,12 @@
 .inputBox textarea:valid,
 .inputBox textarea:focus {
     border: 3px solid var(--Negro);
-    border-radius: 10px;
 }
 
 .enter {
     height: 45px;
     width: 100px;
     border: 3px solid var(--Negro);
-    border-radius: 10px;
     cursor: pointer;
     background-color: transparent;
     transition: 0.5s;
@@ -94,4 +90,4 @@
     text-align: center;
     margin-bottom: 30px;
     font-weight: bolder;
-}
+} */

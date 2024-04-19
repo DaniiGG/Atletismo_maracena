@@ -1,8 +1,16 @@
 /*PRELOADER*/
+.hazañas{
+  margin-bottom: 150px;
+}
+
 .flex-destacada{
   display: flex;
   flex-direction: column;
   flex-flow: wrap;
+  justify-content: space-evenly;
+  padding: 40px;
+  box-shadow: 0 4px 8px 4px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1);
+  font-family:"Montserrat", sans-serif;
 }
 
 .imagen-destacada p {
@@ -18,15 +26,23 @@
 .imagen-destacada {
   position: relative;
   overflow: hidden; 
-  width: 45%; 
+  width: 40%; 
   border-radius: 5px;
+}
+
+.contenido-destacada {
+  width: 50%; 
+}
+
+.contenido-destacada h5{
+  font-weight: 600;
 }
 
 
 .imagen-destacada img {
   display: block;
   width: 100%; 
-  height: 250px;
+  height: 500px;
   transition: transform 0.2s ease;
   border-radius: 5px;
   object-fit:contain;

@@ -1,16 +1,14 @@
-
+/* SLIDER INICIAL */
 .carousel{
-  /* margin-top: 100px; */
   box-shadow: 0px 2px 4px rgb(0, 0, 0);
 }
 .carousel-item {
   position: relative;
 }
 .carousel-item img{
-  height: 100vh;
+  height: 75vh;
   object-fit: cover;
 }
-
 .carousel-item::before {
   content: '';
   position: absolute;
@@ -20,19 +18,9 @@
   height: 100%;
   background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0, 0, 0, 0.8) 100%);
 }
-
-/* .banner{
-  background-image: linear-gradient(to left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5)), url('../public/img/banner-inicio.jpg');
-  width: 100%;
-  height: 20vw;
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  background-repeat: no-repeat; 
-} */
-
 .carousel-caption {
   position: absolute;
+  width: 100%;
   top: 60%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -40,53 +28,52 @@
   color: white; 
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
 }
-
 .carousel-caption h5 {
    font-family: "Montserrat", sans-serif;
   font-size: 5rem;
   font-size: calc(1em + 3vw);
 }
-
-
-.hazañas-section{
-  margin-top: 100px;
+.carousel-caption p{
+  font-family: "Montserrat", sans-serif;
+ font-size: calc(1em + 1vw);
 }
+/* FIN DE LA CONFIGURACIÓN DEL SLIDER */
 
+/* SECCIÓNES DE INICIO */
 .hazañas, .valores{
   margin: 20px 150px;
+  font-family:"Montserrat", sans-serif;
 }
-
-
  h2{
   font-family: "Bebas Neue", sans-serif;
   width: fit-content;
   font-size: calc(1em + 2.5vw);
   margin: 0 0 70px 0;
 }
-
+#valores-title{
+  margin-bottom: 20px;
+}
 .rectangulo {
   margin: 0 0 20px 0;
-  width: 70px; /* Ancho completo */
-  height: 10px; /* Altura del rectángulo */
-  background-color: rgb(64, 98, 247); /* Color azul */
-
+  width: 70px;
+  height: 10px; 
+  background-color: rgb(64, 98, 247); 
 } 
 
-
-
-
+/* SECCIÓN DE HAZAÑAS/NOTICIAS */
+.hazañas-section{
+  margin-top: 100px;
+}
 .flex-hazañas{
   display: flex;
   flex-wrap: wrap;
   justify-content: space-evenly;
   row-gap: 40px;
 }
-
 .hazaña{
 display: flex;
 flex-direction: column;
 row-gap: 20px;
-font-family:"Montserrat", sans-serif;
 width: 380px;
 padding: 25px;
 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1);
@@ -158,9 +145,9 @@ text-align: center;
 .imagen-hazaña:hover .lupa {
   opacity: 1; 
 }
+/* FIN DE LA CONFIGURACIÓN DE HAZAÑAS */
 
-
-
+/* SECCIÓN DE VALORES */
 .valores-section{
   position: relative;
   background-color: #1f1f1f;
@@ -168,8 +155,6 @@ text-align: center;
   padding-top: 10px;
   margin-top: 50px;
 }
-
-
 .valores-section:before {
   content: "";
   position: absolute;
@@ -177,88 +162,177 @@ text-align: center;
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(to bottom, rgb(64, 98, 247) 1%, #ffffff 60%, rgb(64, 98, 247) 100%);
+  background: linear-gradient(to right, rgb(64, 98, 247) 1%, #ffffff 40%, rgb(64, 98, 247) 100%);
   transform: skewY(-1deg);
   z-index: -1;
 }
+.valores-content{
+  display: flex;
+  flex-flow: wrap;
+  padding-bottom: 40px;
+}
+.valores-content p{
+margin-bottom: 30px;
+}
+.valores-content .valores-parte2 .slider{
+  width: 45%;
+}
+.valores-content .valores-parte2 .slider img, video{
+  height: 25vw;
+  object-fit: cover;
+}
+.valores-parte2{
+  width: 100%;
+  display: flex;
+  flex-flow: wrap;
+  align-items: center;
+justify-content: space-evenly;
+}
+.conjunto-valores{
+  display:grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+.skill-element{
+  width: 100px;
+  height: 100px;
+  margin: 40px;
+}
+.progress-container {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color:rgb(64, 98, 247);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+}
+.progress-container span{
+  width: 80%;
+  height: 80%;
+  border-radius: 50%;
+  background-color: #1f1f1f;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0px 0px 15px rgba(0, 0, 0, 0.3);
+}
+.progress-container span i{
+  font-size: 2.5rem;
+  background: none;
+}
+.skill-element p{
+  text-align: center;
+  font-weight: 700;
+  margin: 5px;
+}
 
-
+/* FIN DE LA SECCIÓN DE VALORES */
 .fullscreen-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.8); /* fondo oscuro transparente */
+  background-color: rgba(0, 0, 0, 0.8); 
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 9999;
 }
-
 .fullscreen-image-container {
   max-width: 90%;
   max-height: 90%;
   overflow: auto;
 }
-
 .fullscreen-image-container img {
   max-width: 100%;
   max-height: 100%;
 }
 
-@media (max-width: 1100px) {
 
+/* MEDIA QUERIES */
+@media (max-width: 1300px) {
+  .valores-content .valores-parte2 .slider{
+    width: 80%;
+  }
   
+  .valores-content .valores-parte2 .slider img, video{
+    height: 35vw;
+    object-fit: cover;
+  }
+}
+
+@media (max-width: 1100px) {
+  .carousel-caption {
+    top: 53% !important;
+  }
   article {
     margin-left: 20px !important;
     margin-right: 20px !important;
-}
-
-h2, .rectangulo{
-  margin-left: 50px;
-}
-
-.carousel-item img{
-  height: 50vh;
-}
-
+  }
+  h2, .rectangulo{
+   margin-left: 50px;
+  }
+  .carousel-item img{
+    height: 50vh;
+  }
 }
 
 @media (max-width: 768px) {
-
+  .carousel-item img{
+    height: 30vh;
+  }
   .hazañas-section{
     margin-top: 50px;
   }
-
   .hazaña img {
     height: 250px;
   }
-
   .hazaña h5{
     font-size: 1.2em;
     font-weight: 700;
   }
-
-
   .hazaña .etiqueta{
     font-size: 1em;
   }
   .hazaña .content{
     font-size: 0.85em;
   }
-
   h2, .rectangulo{
     margin-left: 0;
   }
-
   .hazaña{
     width: 100%;
   }
-
   h2{
     font-size: calc(2em + 4vw);
   }
+  .valores-content .valores-parte2 .slider{
+    width: 100%;
   }
+  .valores-content .valores-parte2 .slider img, video{
+    height: 55vw;
+  }
+  .conjunto-valores{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    justify-items: center;
+    width: 100%;
+  }
+  .skill-element{
+    width:15vw;
+    height:15vw;
+    margin: 40px;
+  }
+  .progress-container span i{
+    font-size: 1.5rem;
+  }
+  .skill-element p{
+    margin: 5px 0 0 0;
+    font-size: calc(0.5em + 1vw);
+  }
+}
 
   

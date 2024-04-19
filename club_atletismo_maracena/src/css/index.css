@@ -74,3 +74,33 @@ body{
   opacity: 1;
   transform: translateX(0);
 }
+
+
+@media (max-width: 1100px) {
+
+  
+.carousel-item img{
+  height: 50vh;
+}
+
+.fotoInicial img {
+  height: 40vh;
+}
+
+.main-title{
+  top:20%;
+}
+
+}
+
+@media (max-width: 768px) {
+  .carousel-item img{
+    height: 30vh;
+  }
+
+  .main-title p{
+    font-size: calc(0em + 1.5vw);
+  }
+
+
+  }
