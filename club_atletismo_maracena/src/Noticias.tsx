@@ -30,6 +30,9 @@ function Noticias() {
   });
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [orderByDate, setOrderByDate] = useState<'asc' | 'desc'>('desc');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 1;
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -95,7 +98,7 @@ function Noticias() {
   useEffect(() => {
     const obtenerDatos = async () => {
       try {
-        const datosRef = query(collection(firestore, 'hazañas'), orderBy('fecha', 'desc'));
+        const datosRef = query(collection(firestore, 'hazañas'), orderBy('fecha', orderByDate));
         const snapshot = await getDocs(datosRef);
         const datosObtenidos = snapshot.docs.map((doc) => doc.data() as Hazaña);
         setDatos(datosObtenidos);
@@ -110,7 +113,7 @@ function Noticias() {
     };
 
     obtenerDatos();
-  }, []);
+  }, [orderByDate]);
 
   const toggleForm = () => {
     setShowForm(!showForm);
@@ -126,6 +129,12 @@ function Noticias() {
   const filteredData = datos.filter((dato) =>
     dato.titulo.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentData = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   return (
     <>
@@ -168,17 +177,26 @@ function Noticias() {
           </article>
         )}
 
-        <input
-        type="text"
-        placeholder="Buscar por título..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        />
+<div className="input-container">
+  <i className="fas fa-search"></i>
+  <input 
+    type="text" 
+    placeholder="Buscar por título..." 
+    value={searchTerm} 
+    onChange={(e) => setSearchTerm(e.target.value)} 
+  />
+</div>
+
+        <select value={orderByDate} onChange={(e) => setOrderByDate(e.target.value as 'asc' | 'desc')}>
+          <option value="desc">Fecha descendente</option>
+          <option value="asc">Fecha ascendente</option>
+        </select>
+
         <article className='hazañas'>
         <div className='rectangulo'></div>
           <h2>Noticias del club</h2>
           <div className='flex-hazañas'>
-            {filteredData.map((dato, index) => (
+            {currentData.map((dato, index) => (
               <div key={index} className='hazaña'>
                 <div className='imagen-hazaña'>
                   <img src={dato.imagen} alt={dato.etiqueta}></img>
@@ -194,6 +212,14 @@ function Noticias() {
             ))}
           </div>
         </article>
+
+        <div className="pagination">
+        {Array.from({ length: Math.ceil(filteredData.length / itemsPerPage) }).map((_, index) => (
+          <button key={index} onClick={() => paginate(index + 1)}>
+            {index + 1}
+          </button>
+        ))}
+      </div>
 
         {isAdmin && (
         <>

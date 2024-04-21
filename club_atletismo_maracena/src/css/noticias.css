@@ -39,6 +39,19 @@
 }
 
 
+.input-container {
+  position: relative;
+  width: fit-content;
+}
+
+.input-container i {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+
 .imagen-destacada img {
   display: block;
   width: 100%; 

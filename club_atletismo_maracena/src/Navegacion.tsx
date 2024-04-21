@@ -115,7 +115,7 @@ function Navegacion() {
                         <>
                           <a>Bienvenido, {user.displayName ? user.displayName : user.email}</a>
                             <ul className="submenu">
-                            {esAdmin && <li><Link to="/admin">Administración</Link></li>}
+                            {esAdmin && <li><Link to="/administracion">Administración</Link></li>}
                               <li><a className="link" onClick={alternarSignOut}>Cerrar sesión</a></li>
                             </ul>
                         </>

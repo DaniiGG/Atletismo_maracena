@@ -1,11 +1,15 @@
-import './css/index.css'
-import { createRoot } from "react-dom/client";
+import './css/index.css';
+import { useState, useEffect } from 'react';
+import { auth, firestore } from './firebase.ts';
+import { createRoot } from 'react-dom/client';
+import { query, where, getDocs, collection, DocumentData } from 'firebase/firestore';
 import {
   BrowserRouter as Router,
   Routes,
   Route,
-} from "react-router-dom";
-import App from './App.jsx'
+  Navigate,
+} from 'react-router-dom';
+import App from './App.jsx';
 import Navegacion from './Navegacion.tsx';
 import Club from './Club.tsx';
 import Inscripcion from './Inscripciones.tsx';
@@ -17,9 +21,62 @@ import Login from './Login.tsx';
 import Cookies from './Cookies.tsx';
 import PageNotFound from './PageNotFound.tsx';
 import ScrollToTop from './ScrollToTop.tsx';
+import Administracion from './Administracion.tsx';
+
+const getUserRole = async (userId: string): Promise<string> => {
+  try {
+    const userQuery = query(collection(firestore, 'usuarios'), where('userId', '==', userId));
+    const userSnapshot = await getDocs(userQuery);
+    if (!userSnapshot.empty) {
+      // Se asume que solo hay un documento por usuario, por lo que se toma el primero
+      const userData = userSnapshot.docs[0].data() as DocumentData;
+      return userData.role || 'user';
+      
+    } else {
+      console.error('No se encontró el usuario en la base de datos');
+      return 'user';
+    }
+  } catch (error) {
+    console.error('Error al obtener el rol del usuario:', error);
+    return 'user';
+  }
+};
+
+interface PrivateRouteProps {
+  path: string;
+  element: React.ReactNode;
+}
+
+const PrivateRoute: React.FC<PrivateRouteProps> = ({ path, element }: PrivateRouteProps) => {
+  const [userRole, setUserRole] = useState("");
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        const role = await getUserRole(user.uid);
+        console.log(role)
+        setUserRole(role);
+        
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  if (userRole === "") {
+    return <div>Cargando...</div>;
+  } else if (userRole === 'admin') {
+    return (
+      <Routes>
+        <Route path={path} element={element} />
+      </Routes>
+    );
+  } else {
+    return <Navigate to="/login" />;
+  }
+};
 
 const AppRoutes = () => {
-  
   return (
     <Router>
       <ScrollToTop />
@@ -32,6 +89,7 @@ const AppRoutes = () => {
         <Route path="contacto" element={<><Navegacion /><Contacto /><Footer /><Cookies /></>} />
         <Route path="login" element={<><Navegacion /><Login /><Footer /><Cookies /></>} />
         <Route path="register" element={<><Navegacion /><Footer /><Cookies /></>} /> 
+        <Route path="administracion/*" element={<PrivateRoute path="administracion/*" element={<><Navegacion /><Administracion /><Cookies /></>} />} />  
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </Router>
@@ -41,7 +99,7 @@ const AppRoutes = () => {
 const rootElement = document.getElementById('root');
 if (rootElement) {
   createRoot(rootElement).render(
-      <AppRoutes />
+    <AppRoutes />
   );
 } else {
   console.error('No se encontró el elemento raíz (root) en el DOM.');
