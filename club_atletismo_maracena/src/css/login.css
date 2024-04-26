@@ -96,3 +96,26 @@ cursor: pointer;
     margin-bottom: 30px;
     font-weight: bolder;
 }
+
+.social-login-buttons button{
+    padding: 10px;
+    border: 1px solid black;
+    transition: all .6s ease;
+}
+
+.social-login-buttons button:hover{
+    transform: scale(1.05);
+}
+.social-login-buttons img{
+    width: 30px;
+    height: 30px;
+}
+
+.google-login{
+    background-color:rgb(255, 255, 255);
+}
+
+.facebook-login{
+    background-image: linear-gradient(to top right, #0163E0,#18ACFE);
+    color: white;
+}

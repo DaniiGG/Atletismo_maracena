@@ -1,4 +1,4 @@
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { GoogleAuthProvider, signInWithPopup, FacebookAuthProvider } from "firebase/auth";
 import { getAuth, signInWithEmailAndPassword} from "firebase/auth";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
@@ -40,6 +40,44 @@ function Login() {
         }
     }
 
+    function logueoFacebook() {
+        const provider = new FacebookAuthProvider();
+        const auth = getAuth(app);
+        signInWithPopup(auth, provider)
+            .then((result) => {
+                const user = result.user;
+                const userId = user.uid;
+                const username = user.displayName;
+                const email = user.email;
+                const db = getFirestore();
+                const usuariosRef = collection(db, 'usuarios');
+                const consulta = query(usuariosRef, where('userId', '==', userId));
+                getDocs(consulta)
+                    .then((querySnapshot) => {
+                        if (!querySnapshot.empty) {
+                            console.log("El usuario ya está registrado.");
+                        } else {
+                            guardarRolUsuario(userId, username || "Usuario", email || "", "user");
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error al consultar la base de datos:", error);
+                    });
+                navigate("/");
+            }).catch((error) => {
+                const errorCode = error.code;
+                let errorMessage = "Error al iniciar sesión con Facebook. Por favor, intenta de nuevo más tarde.";
+                switch (errorCode) {
+                    case "auth/popup-closed-by-user":
+                        errorMessage = "El inicio de sesión con Facebook fue cancelado por el usuario.";
+                        break;
+                    default:
+                        errorMessage = error.message;
+                }
+                setError(errorMessage);
+                console.error("Error al iniciar sesión con Facebook:", errorMessage);
+            });
+    }
 
     function logueoGoogle() {
         const provider = new GoogleAuthProvider();
@@ -187,7 +225,8 @@ function Login() {
                 </form>
                 
                 <div className="social-login-buttons">
-                    <button className="google-login" onClick={logueoGoogle}><img src="../public/google.png"/></button>
+                    <button className="google-login" onClick={logueoGoogle}><img src="../public/img/google.png"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Iniciar sesión con Google</button>
+                    <button className="facebook-login" onClick={logueoFacebook}><img src="../public/img/facebook.png"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Iniciar sesión con Facebook</button>
                 </div>
                 <p>¿No tienes cuenta? <span onClick={() => setShowLogin(false)}>Regístrate</span></p>
                 

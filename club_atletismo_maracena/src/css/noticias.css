@@ -1,6 +1,7 @@
 /*PRELOADER*/
 .hazañas{
   margin-bottom: 150px;
+  position: relative;
 }
 
 .flex-destacada{
@@ -22,12 +23,16 @@
   padding: 5px 10px; 
   border-radius: 0 4px 4px 0;
 }
-
-.imagen-destacada {
-  position: relative;
-  overflow: hidden; 
-  width: 40%; 
-  border-radius: 5px;
+.flex-destacada .carousel{
+  width: 40%;
+  height: 55vh;
+}
+.flex-destacada .carousel-item img{
+  height: 55vh;
+  object-fit: cover;
+}
+.flex-destacada .carousel-control-next-icon,.flex-destacada .carousel-control-prev-icon {
+  background-color: black;
 }
 
 .contenido-destacada {
@@ -58,7 +63,7 @@
   height: 500px;
   transition: transform 0.2s ease;
   border-radius: 5px;
-  object-fit:contain;
+  object-fit:cover;
 }
 
 .preloader{
@@ -110,3 +115,8 @@
     }
   }
   
+  .filtros{
+    position: absolute;
+    top:30px;
+    right: 0;
+  }

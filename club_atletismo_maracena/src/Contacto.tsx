@@ -1,15 +1,24 @@
-
+import { useState, useEffect } from 'react';
 
 import './css/contacto.css'
 
 
 function Contacto() {
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    setLoaded(true);
+  }, []);
   
 
   return (
     <> 
       <div className='fotoInicial'>
         <img src="../img/imagen-slider3.png"></img>
+      </div>
+      <div className={`main-title ${loaded ? 'loaded' : ''}`}>
+      <h1 id="title">Contáctanos</h1><br></br>
+      <p id="subtitle">Estamos aquí para escucharte: contáctanos y mantente informado</p>
       </div>
       <div id="all-form">
           

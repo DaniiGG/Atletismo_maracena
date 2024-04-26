@@ -9,7 +9,7 @@
   height: 75vh;
   object-fit: cover;
 }
-.carousel-item::before {
+header .carousel-item::before {
   content: '';
   position: absolute;
   top: 0;
@@ -89,7 +89,7 @@ text-align: center;
   margin: 0;
 }
 
-.imagen-hazaña p {
+.etiqueta {
   position: absolute;
   bottom: 0; 
   left: 0; 

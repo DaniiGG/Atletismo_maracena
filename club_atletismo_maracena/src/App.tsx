@@ -1,5 +1,4 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'jquery/dist/jquery.min.js';
 import { useState, useEffect } from 'react';
 import './App.css';
 import { firestore } from './firebase.ts';
@@ -10,6 +9,7 @@ import '@fortawesome/fontawesome-free/css/all.css';
 interface Hazaña {
   fecha: { seconds: number, nanoseconds: number };
   imagen: string;
+  imagenes: string[];
   titulo: string;
   contenido: string;
   etiqueta: string;
@@ -60,20 +60,20 @@ function App() {
           </div>
           <div className="carousel-inner">
             <div className="carousel-item active">
-              <img src="../img/pistaAtletismo.jpeg" className="d-block w-100" loading="lazy" alt="Pista de atletismo" />
+              <img src="../img/pistaAtletismo.jpeg" height="" width="" className="d-block w-100" loading="lazy" alt="Pista de atletismo" />
               <div className="carousel-caption d-md-block animate__animated animate__fadeIn">
                 <h5 className="animate__animated animate__fadeInDown">Bienvenido a</h5>
                 <p>Club Atletismo Maracena</p>
               </div>
             </div>
             <div className="carousel-item">
-              <img src="../img/imagen-slider2.jpg" className="d-block w-100" loading="lazy" alt="Fin de carrera" />
+              <img src="../img/imagen-slider2.jpg" height="" width="" className="d-block w-100" loading="lazy" alt="Fin de carrera" />
               <div className="carousel-caption d-md-block animate__animated animate__fadeIn">
               <h5 className="animate__animated animate__fadeInDown">Second slide label</h5>
               </div>
             </div>
             <div className="carousel-item">
-              <img src="../img/imagen-medalla-sierraB.jpg" className="d-block w-100" loading="lazy" alt="Tercera foto" />
+              <img src="../img/imagen-medalla-sierraB.jpg" height="" width="" className="d-block w-100" loading="lazy" alt="Tercera foto" />
               <div className="carousel-caption d-md-block animate__animated animate__fadeIn">
               <h5 className="animate__animated animate__fadeInDown">Third slide label</h5>
               <p className="animate__animated animate__fadeInDown">Estamos a full</p>
@@ -100,7 +100,9 @@ function App() {
             {datos.map((dato, index) => (
               <div key={index} className="hazaña">
                 <div className='imagen-hazaña'  onClick={() => handleImagenClick(index)}>
-                <img src={dato.imagen} alt={dato.etiqueta}></img>
+                {dato.imagenes && dato.imagenes.length > 0 && (
+                  <img src={dato.imagenes[dato.imagenes.length - 1]} alt={dato.etiqueta} />
+                )}
                 <p className='etiqueta'>{dato.etiqueta}</p>
                 <div className='lupa'> <i className="fa-solid fa-magnifying-glass fa-2xl"></i></div>
                 </div>
@@ -114,7 +116,7 @@ function App() {
         {imagenFullscreen !== null && (
         <div className="fullscreen-overlay" onClick={handleCloseFullscreen}>
           <div className="fullscreen-image-container">
-            <img src={datos[imagenFullscreen].imagen} alt={datos[imagenFullscreen].etiqueta}></img>
+          <img src={datos[imagenFullscreen].imagenes[datos[imagenFullscreen].imagenes.length - 1]} alt={datos[imagenFullscreen].etiqueta} />
             <p>{datos[imagenFullscreen].etiqueta}</p>
           </div>
         </div>
@@ -134,16 +136,16 @@ function App() {
             <div id="carouselExample" className="carousel slide" data-bs-ride="carousel">
               <div className="carousel-inner ">
                 <div className="carousel-item active">
-                  <img src="../img/trabajo_en_equipo.png" className="d-block w-100" alt="Trabajo en equipo"/>
+                  <img src="../img/trabajo_en_equipo.png" height="" width="" className="d-block w-100" alt="Trabajo en equipo"/>
                 </div>
                 <div className="carousel-item">
-                  <img src="../img/trabajo_en_equipo.png" className="d-block w-100" alt="..."/>
+                  <img src="../img/trabajo_en_equipo.png" height="" width="" className="d-block w-100" alt="..."/>
                 </div>
                 {/* <div className="carousel-item">
                 <video src="../img/prueba.mp4" className="d-block w-100" autoPlay loop></video>
                 </div> */}
                 <div className="carousel-item">
-                  <img src="../img/pistaAtletismo.jpeg" className="d-block w-100" alt="..."/>
+                  <img src="../img/pistaAtletismo.jpeg" height="" width="" className="d-block w-100" alt="..."/>
                 </div>
               </div>
               <button className="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">

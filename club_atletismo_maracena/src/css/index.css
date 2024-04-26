@@ -33,7 +33,7 @@ body{
 
 .fotoInicial img {
   width: 100%;
-  height: 55vh;
+  height: 45vh;
   object-fit: cover;
 }
 
@@ -41,7 +41,7 @@ body{
   position: absolute;
   left: 0;
   right: 0;
-  top:23%;
+  top:20%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -73,6 +73,38 @@ body{
 .main-title.loaded {
   opacity: 1;
   transform: translateX(0);
+}
+
+.message {
+  position: fixed;
+  top: 25%;
+  transform: translateY(-50%);
+  padding: 20px;
+  margin-bottom: 10px;
+  font-weight: bold;
+  animation: slideIn 0.5s forwards; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.message.error {
+  background-color: #ffffff; 
+  color: #cc0000; 
+  border-right: 8px solid #cc0000;
+}
+
+
+.message.success {
+  background-color: #ffffff; 
+  color: #008000; 
+  border-right: 8px solid #008000;
+}
+@keyframes slideIn {
+  from {
+    left: -100%; 
+  }
+  to {
+    left: 0; 
+  }
 }
 
 

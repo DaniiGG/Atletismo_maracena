@@ -28,10 +28,8 @@ const getUserRole = async (userId: string): Promise<string> => {
     const userQuery = query(collection(firestore, 'usuarios'), where('userId', '==', userId));
     const userSnapshot = await getDocs(userQuery);
     if (!userSnapshot.empty) {
-      // Se asume que solo hay un documento por usuario, por lo que se toma el primero
       const userData = userSnapshot.docs[0].data() as DocumentData;
       return userData.role || 'user';
-      
     } else {
       console.error('No se encontró el usuario en la base de datos');
       return 'user';
@@ -47,32 +45,29 @@ interface PrivateRouteProps {
   element: React.ReactNode;
 }
 
-const PrivateRoute: React.FC<PrivateRouteProps> = ({ path, element }: PrivateRouteProps) => {
+const PrivateRoute: React.FC<PrivateRouteProps> = ({ element }: PrivateRouteProps) => {
   const [userRole, setUserRole] = useState("");
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
         const role = await getUserRole(user.uid);
-        console.log(role)
         setUserRole(role);
-        
+      } else {
+        setUserRole('login');
       }
     });
-
     return () => unsubscribe();
   }, []);
 
   if (userRole === "") {
     return <div>Cargando...</div>;
   } else if (userRole === 'admin') {
-    return (
-      <Routes>
-        <Route path={path} element={element} />
-      </Routes>
-    );
-  } else {
+    return element;
+  } else if (userRole === 'login') {
     return <Navigate to="/login" />;
+  } else {
+    return <Navigate to="/error" />;
   }
 };
 
@@ -89,7 +84,7 @@ const AppRoutes = () => {
         <Route path="contacto" element={<><Navegacion /><Contacto /><Footer /><Cookies /></>} />
         <Route path="login" element={<><Navegacion /><Login /><Footer /><Cookies /></>} />
         <Route path="register" element={<><Navegacion /><Footer /><Cookies /></>} /> 
-        <Route path="administracion/*" element={<PrivateRoute path="administracion/*" element={<><Navegacion /><Administracion /><Cookies /></>} />} />  
+        <Route path="administracion" element={ <PrivateRoute  path="administracion" element={<><Administracion /></>} /> } />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </Router>

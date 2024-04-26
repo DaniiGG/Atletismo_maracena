@@ -1,0 +1,174 @@
+.encabezado-administracion{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+    background-color: #333;
+    color: white;
+}
+.encabezado-administracion #inicio{
+    display: flex;
+    column-gap: 10px;
+    align-items: center;
+    width: 25%;
+}
+.encabezado-administracion #inicio a:visited{
+    color: white;
+    text-decoration: none;
+}
+.encabezado-administracion #inicio a{
+    color: white;
+    text-decoration: none;
+}
+.encabezado-administracion h1{
+    font-family: "Bebas Neue", sans-serif;
+    text-align: center;
+    font-size: 3em;
+    width: 65%;
+    margin: 0;
+}
+.administracion{
+    display: flex;
+    column-gap: 30px;
+    
+}
+.sidebar {
+    width: 200px;
+    background-color: #333;
+    color: white;
+    cursor: pointer;
+}
+.sidebar ul {
+    padding: 0;
+}
+.sidebar ul li{
+    text-align: center;
+    padding: 30px 40px;
+}
+
+.submenu-hidden {
+    display: none;
+}
+
+.submenu-visible {
+    display: block;
+}
+.secciones{
+    width: 50%;
+}
+
+.noticia-formulario {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.noticia-formulario input[type="text"],
+.noticia-formulario textarea,
+.noticia-formulario input[type="date"],
+.noticia-formulario input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.noticia-formulario .checkbox-destacada {
+    display: block;
+    margin-bottom: 15px;
+}
+
+.noticia-formulario .checkbox-destacada input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.noticia-formulario .imagenes-previas {
+    margin-bottom: 15px;
+}
+
+.noticia-formulario .imagenes-previas .imagen-previa {
+    max-width: 200px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.noticia-formulario .boton-insertar {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: rgb(64, 98, 247); 
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.noticia-formulario .boton-insertar:hover {
+    background-color: rgb(89, 114, 228); 
+}
+
+
+.button {
+    position: relative;
+    width: 200px;
+    height: 40px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border: 1px solid #17795E;
+    background-color: #209978;
+    overflow: hidden;
+  }
+  
+  .button, .button__icon, .button__text {
+    transition: all 0.3s;
+  }
+  
+  .button .button__text {
+    transform: translateX(10px);
+    color: #fff;
+    font-weight: 600;
+  }
+  
+  .button .button__icon {
+    position: absolute;
+    transform: translateX(153px);
+    height: 100%;
+    width: 39px;
+    background-color: #17795E;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .button .svg {
+    width: 20px;
+    fill: #fff;
+  }
+  
+  .button:hover {
+    background: #17795E;
+  }
+  
+  .button:hover .button__text {
+    color: transparent;
+  }
+  
+  .button:hover .button__icon {
+    width: 148px;
+    transform: translateX(21px);
+  }
+  
+  .button:active .button__icon {
+    background-color: #146c54;
+  }
+  
+  .button:active {
+    border: 1px solid #146c54;
+  }
