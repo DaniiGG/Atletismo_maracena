@@ -172,3 +172,144 @@
   .button:active {
     border: 1px solid #146c54;
   }
+
+  .edit-button {
+    position: relative;
+    width: 150px;
+    height: 40px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border: 1px solid #0025cc;
+    background-color: #005ce5;
+    overflow: hidden;
+  }
+  
+  .edit-button, .button__icon, .button__text {
+    transition: all 0.3s;
+  }
+  
+  .edit-button .button__text {
+    transform: translateX(35px);
+    color: #fff;
+    font-weight: 600;
+  }
+  
+  .edit-button .button__icon {
+    position: absolute;
+    transform: translateX(103px);
+    height: 100%;
+    width: 39px;
+    background-color: #0025cc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .edit-button .svg {
+    width: 20px;
+  }
+  
+  .edit-button:hover {
+    background: #005ce5;
+  }
+  
+  .edit-button:hover .button__text {
+    color: transparent;
+  }
+  
+  .edit-button:hover .button__icon {
+    width: 148px;
+    transform: translateX(0);
+  }
+  
+  .edit-button:active .button__icon {
+    background-color: #005ce5;
+  }
+  
+  .edit-button:active {
+    border: 1px solid #005ce5;
+  }
+  
+
+  .del-button {
+    position: relative;
+    width: 150px;
+    height: 40px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border: 1px solid #cc0000;
+    background-color: #e50000;
+    overflow: hidden;
+  }
+  
+  .del-button, .button__icon, .button__text {
+    transition: all 0.3s;
+  }
+  
+  .del-button .button__text {
+    transform: translateX(25px);
+    color: #fff;
+    font-weight: 600;
+  }
+  
+  .del-button .button__icon {
+    position: absolute;
+    transform: translateX(103px);
+    height: 100%;
+    width: 39px;
+    background-color: #cc0000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .del-button .svg {
+    width: 20px;
+  }
+  
+  .del-button:hover {
+    background: #cc0000;
+  }
+  
+  .del-button:hover .button__text {
+    color: transparent;
+  }
+  
+  .del-button:hover .button__icon {
+    width: 148px;
+    transform: translateX(0);
+  }
+  
+  .del-button:active .button__icon {
+    background-color: #b20000;
+  }
+  
+  .del-button:active {
+    border: 1px solid #b20000;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+
+  th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+  }
+
+  th {
+    background-color: #f2f2f2;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+
+  tr:hover {
+    background-color: #f2f2f2;
+  }

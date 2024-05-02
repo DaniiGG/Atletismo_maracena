@@ -22,6 +22,7 @@ import Cookies from './Cookies.tsx';
 import PageNotFound from './PageNotFound.tsx';
 import ScrollToTop from './ScrollToTop.tsx';
 import Administracion from './Administracion.tsx';
+import HazañaDetalle from './HazañaDetalle.tsx';
 
 const getUserRole = async (userId: string): Promise<string> => {
   try {
@@ -84,6 +85,7 @@ const AppRoutes = () => {
         <Route path="contacto" element={<><Navegacion /><Contacto /><Footer /><Cookies /></>} />
         <Route path="login" element={<><Navegacion /><Login /><Footer /><Cookies /></>} />
         <Route path="register" element={<><Navegacion /><Footer /><Cookies /></>} /> 
+        <Route path="/noticia/:id" element={<><Navegacion /><HazañaDetalle/><Footer /><Cookies /></>} />
         <Route path="administracion" element={ <PrivateRoute  path="administracion" element={<><Administracion /></>} /> } />
         <Route path="*" element={<PageNotFound />} />
       </Routes>

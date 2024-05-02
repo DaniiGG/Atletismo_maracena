@@ -206,8 +206,26 @@ function Administracion() {
                                     <p><strong>Etiqueta:</strong> {noticia.etiqueta}</p>
                                     <p><strong>Fecha:</strong> {new Date(noticia.fecha.seconds * 1000).toLocaleDateString()}</p>
                                     <p><strong>Destacada:</strong> {noticia.destacada ? 'Sí' : 'No'}</p>
-                                    <button onClick={() => handleEditarNoticia(noticia)}>Editar</button>
-                                    <button onClick={() => handleEliminarNoticia(noticia.id)}>Eliminar</button>
+                                    <button className="edit-button" type="button" onClick={() => handleEditarNoticia(noticia)}>
+
+                                    <span className="button__text">Editar</span>
+                                    <span className="button__icon">
+                                    <svg className="svg-icon" fill="none" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><g stroke="#fff" strokeLinecap="round" strokeWidth="2"><path d="m20 20h-16"></path><path clipRule="evenodd" d="m14.5858 4.41422c.781-.78105 2.0474-.78105 2.8284 0 .7811.78105.7811 2.04738 0 2.82843l-8.28322 8.28325-3.03046.202.20203-3.0304z" fillRule="evenodd"></path></g></svg>
+                                    </span></button>
+                                    <button className="del-button" type="button" onClick={() => handleEliminarNoticia(noticia.id)}>
+                                    <span className="button__text">Eliminar</span>
+                                    <span className="button__icon">
+                                        <svg className="svg" height="512" viewBox="0 0 512 512" width="512" xmlns="http://www.w3.org/2000/svg">
+                                        <title></title>
+                                        <path d="M112,112l20,320c.95,18.49,14.4,32,32,32H348c17.67,0,30.87-13.51,32-32l20-320" style={{fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px'}}></path>
+                                        <line className="stroke:#fff;stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px" x1="80" x2="432" y1="112" y2="112"></line>
+                                        <path d="M192,112V72h0a23.93,23.93,0,0,1,24-24h80a23.93,23.93,0,0,1,24,24h0v40" style={{fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px'}}></path>
+                                        <line style={{fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px'}} x1="256" x2="256" y1="176" y2="400"></line>
+                                        <line style={{fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px'}} x1="184" x2="192" y1="176" y2="400"></line>
+                                        <line style={{fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px'}} x1="328" x2="320" y1="176" y2="400"></line>
+                                        </svg>
+                                    </span>
+                                    </button>
                                 </div>
                             ))}
                         </div>
@@ -329,13 +347,33 @@ function Administracion() {
 
                 <div className={seccionAbierta === "seccion2" ? 'submenu-visible' : 'submenu-hidden'}>
                 <h3>Lista de Usuarios</h3>
-                <ul>
-                    {inscripciones.map(inscripcion => (
-                        <li key={inscripcion.id}>
-                            Nombre: {inscripcion.nombre}, Apellidos: {inscripcion.apellidos}, Email: {inscripcion.email}, Teléfono: {inscripcion.telefono}, Dirección: {inscripcion.direccion}
-                        </li>
-                    ))}
-                </ul>
+                <table>
+                    <thead>
+                        <tr>
+                        <th>Nombre</th>
+                        <th>Apellidos</th>
+                        <th>Email</th>
+                        <th>Teléfono</th>
+                        <th>Dirección</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {inscripciones.map(inscripcion => (
+                        <tr key={inscripcion.id}>
+                            <td>{inscripcion.nombre}</td>
+                            <td>{inscripcion.apellidos}</td>
+                            <td>{inscripcion.email}</td>
+                            <td>{inscripcion.telefono}</td>
+                            <td>{inscripcion.direccion}</td>
+                        </tr>
+                        ))}
+                    </tbody>
+                    <tfoot>
+                        <tr className="total-row">
+                        <td colSpan={5}>Total de inscripciones: {inscripciones.length}</td>
+                        </tr>
+                    </tfoot>
+                </table>
                 <button className="button" type="button" onClick={exportarAExcel}>
                     <span className="button__text">Descargar Excel</span>
                     <span className="button__icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 35 35" id="bdd05811-e15d-428c-bb53-8661459f9307" data-name="Layer 2" className="svg"><path d="M17.5,22.131a1.249,1.249,0,0,1-1.25-1.25V2.187a1.25,1.25,0,0,1,2.5,0V20.881A1.25,1.25,0,0,1,17.5,22.131Z"></path><path d="M17.5,22.693a3.189,3.189,0,0,1-2.262-.936L8.487,15.006a1.249,1.249,0,0,1,1.767-1.767l6.751,6.751a.7.7,0,0,0,.99,0l6.751-6.751a1.25,1.25,0,0,1,1.768,1.767l-6.752,6.751A3.191,3.191,0,0,1,17.5,22.693Z"></path><path d="M31.436,34.063H3.564A3.318,3.318,0,0,1,.25,30.749V22.011a1.25,1.25,0,0,1,2.5,0v8.738a.815.815,0,0,0,.814.814H31.436a.815.815,0,0,0,.814-.814V22.011a1.25,1.25,0,1,1,2.5,0v8.738A3.318,3.318,0,0,1,31.436,34.063Z"></path></svg></span>
