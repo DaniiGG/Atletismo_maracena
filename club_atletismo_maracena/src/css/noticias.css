@@ -66,6 +66,10 @@
   object-fit:cover;
 }
 
+.detalles-noticia .carousel{
+  width: 50%;
+}
+
 .preloader{
     display: flex;
     justify-content: center;

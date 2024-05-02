@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { firestore } from './firebase.ts';
 import { collection, getDocs, orderBy, query } from 'firebase/firestore';
+import { Link } from 'react-router-dom';
 import './css/noticias.css';
 
 interface Hazaña {
@@ -11,6 +12,7 @@ interface Hazaña {
   contenido: string;
   etiqueta: string;
   destacada: boolean;
+  id: string;
 }
 
 function Noticias() {
@@ -38,7 +40,10 @@ function Noticias() {
         const datosDest = query(collection(firestore, 'hazañas'), orderBy('fecha', "desc"));
         const snapshot = await getDocs(datosRef);
         const snapshotDesc = await getDocs(datosDest);
-        const datosObtenidos = snapshot.docs.map((doc) => doc.data() as Hazaña);
+        const datosObtenidos = snapshot.docs.map((doc) => {
+          const data = doc.data() as Hazaña;
+          return { ...data, id: doc.id }; // Incluimos el ID del documento en los datos
+        });
         const datosDestacada = snapshotDesc.docs.map((doc) => doc.data() as Hazaña);
         setDatos(datosObtenidos);
         const destacadaReciente = datosDestacada.find((dato) => dato.destacada);
@@ -153,7 +158,7 @@ function Noticias() {
           <h2>Noticias del club</h2>
           <div className='flex-hazañas'>
             {currentData.map((dato, index) => (
-              <div key={index} className='hazaña'>
+              <div key={dato.id} className='hazaña'>
                 <div className='imagen-hazaña' onClick={() => handleImagenClick(index)}>
                 {dato.imagenes && dato.imagenes.length > 0 && (
                   <img src={dato.imagenes[dato.imagenes.length - 1]} alt={dato.etiqueta} />
@@ -161,11 +166,13 @@ function Noticias() {
                   <p className='etiqueta'>{dato.etiqueta}</p>
                   <div className='lupa'> <i className="fa-solid fa-magnifying-glass fa-2xl"></i></div>
                 </div>
+                <Link to={`/noticia/${dato.id}`} className='news-link'>
                 <h5>{dato.titulo}</h5>
                 <p className='content'>{dato.contenido.length > 100 ? dato.contenido.slice(0, 130) + '...' : dato.contenido}</p>
                 <p className='content'>
                   <b>{new Date(dato.fecha.seconds * 1000).toLocaleDateString()}</b>
                 </p>
+                </Link>
               </div>
             ))}
           </div>
