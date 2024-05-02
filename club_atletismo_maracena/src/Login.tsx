@@ -225,8 +225,8 @@ function Login() {
                 </form>
                 
                 <div className="social-login-buttons">
-                    <button className="google-login" onClick={logueoGoogle}><img src="../public/img/google.png"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Iniciar sesión con Google</button>
-                    <button className="facebook-login" onClick={logueoFacebook}><img src="../public/img/facebook.png"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Iniciar sesión con Facebook</button>
+                    <button className="google-login" onClick={logueoGoogle}><img src="../img/google.png"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Iniciar sesión con Google</button>
+                    <button className="facebook-login" onClick={logueoFacebook}><img src="../img/facebook.png"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Iniciar sesión con Facebook</button>
                 </div>
                 <p>¿No tienes cuenta? <span onClick={() => setShowLogin(false)}>Regístrate</span></p>
                 
