@@ -1,0 +1,32 @@
+.grid-container {
+    columns: 4;
+    margin: 200px;
+  }
+  
+  .image {
+    break-inside: avoid;
+    width: 100%;
+  }
+  
+  .image img {
+    width: 100%;
+    height: auto;
+    display: block;
+    margin-bottom: 15px;
+  }
+  
+  /* Transiciones y efectos */
+  .image img {
+    transition: transform 0.3s ease;
+  }
+  
+  .image:hover img {
+    transform: scale(1.1);
+  }
+
+  .grid-container .descripcion{
+    position: absolute;
+    background-color: blue;
+    z-index: 200;
+    bottom:10px
+  }

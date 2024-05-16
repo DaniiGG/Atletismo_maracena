@@ -20,28 +20,30 @@ function Contacto() {
       <h1 id="title">Contáctanos</h1><br></br>
       <p id="subtitle">Estamos aquí para escucharte: contáctanos y mantente informado</p>
       </div>
-      <div id="all-form">
-          
-          <form action="#" method="post">
-          <div className="formulary">
-              
-  
-              <div className="inputBox">
-                  <input type="text" required/>
-                  <h5>Email*</h5>
-              </div>
 
-              <div className="inputBox">
-                  <input type="pass" required/>
-                  <h5>Contraseña*</h5>
+      <section className='section'>
+        <article className='article'>
+          <div className='rectangulo'></div>
+              <h2>
+                Formulario de contacto
+              </h2>
+              <div className='mensaje-formulario'>
+                <p>¡Hola corredor/a! ¿Tienes alguna pregunta sobre entrenamiento, competiciones o cualquier otra cosa relacionada con el atletismo? Estamos aquí para ayudarte.</p>
+                <p>Completa el formulario a continuación con tus dudas o problemas.</p>
+                <p>Por favor, proporciona la mayor cantidad de detalles posible para que podamos entender mejor tu situación y ofrecerte la mejor asistencia.</p>
               </div>
-  
-              <button type="submit" className="enter">Iniciar Sesión</button>
-  
-          </div>
-      </form>
+            <form action="#" className="inscripciones-form" method="post">
+                  
+                <div className="form-label">Email:</div>
+                <input className="form-input" type="text" required/>
+
+                <div className="form-label">Mensaje:</div>
+                <textarea className="form-input" name="" id="" cols={30} rows={10}></textarea>
       
-  </div>
+                <button className="form-button" type="submit">Enviar</button>
+            </form>
+        </article>
+      </section>
     </>
   )
 }

@@ -47,8 +47,8 @@ function Footer() {
                     <p><Link to="">Aviso legal</Link>&nbsp;|&nbsp;<Link to="">Política de cookies</Link>&nbsp;|&nbsp;<Link to="">Política de privacidad</Link></p>
                 </div>
                 <div className="redes">
-                    <i className="fa-brands fa-square-facebook fa-2xl"></i>&nbsp;&nbsp;&nbsp;
-                    <i className="fa-brands fa-instagram fa-2xl"></i>
+                    <a target="_blank" href="https://www.facebook.com/clubatletismomaracena/?locale=es_ES"><i className="fa-brands fa-square-facebook fa-2xl"></i></a>&nbsp;&nbsp;&nbsp;
+                    <a target="_blank" href="https://www.instagram.com/club_atletismo_maracena/"><i className="fa-brands fa-instagram fa-2xl"></i></a>
                 </div>
             </div>
         </footer>

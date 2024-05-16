@@ -22,7 +22,7 @@ function Noticias() {
   const [searchTerm, setSearchTerm] = useState("");
   const [orderByDate, setOrderByDate] = useState<'asc' | 'desc'>('desc');
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 8;
   const [imagenFullscreen, setImagenFullscreen] = useState<number | null>(null);
 
   const handleImagenClick = (index: number) => {
@@ -83,7 +83,7 @@ function Noticias() {
       <h1 id="title">Noticias del club</h1><br></br>
       <p id="subtitle">¡Mantente al tanto de todas las novedades, eventos y logros de nuestro club!</p>
       </div>
-      <section className='hazañas-section'>
+      <section className='section'>
       {loading ? ( // Preloader si está cargando
           <div className="preloader">
             <div className="loading-wave">
@@ -96,7 +96,7 @@ function Noticias() {
         ) : (
           <>
         {destacada && (
-          <article className='hazañas'>
+          <article className='hazañas article'>
             <div className='rectangulo'></div>
             <h2>Noticia Destacada</h2>
             <div className='flex-destacada'>
@@ -137,7 +137,7 @@ function Noticias() {
         )}
 
 
-        <article className='hazañas'>
+        <article className='hazañas article'>
           <div className='filtros'>
           <div className="input-container">
             <i className="fas fa-search"></i>
@@ -167,12 +167,13 @@ function Noticias() {
                   <div className='lupa'> <i className="fa-solid fa-magnifying-glass fa-2xl"></i></div>
                 </div>
                 <Link to={`/noticia/${dato.id}`} className='news-link'>
-                <h5>{dato.titulo}</h5>
+                <h5>{dato.titulo}&nbsp;<i className="fa-solid fa-arrow-up-right-from-square"></i></h5>
+                </Link>
                 <p className='content'>{dato.contenido.length > 100 ? dato.contenido.slice(0, 130) + '...' : dato.contenido}</p>
                 <p className='content'>
                   <b>{new Date(dato.fecha.seconds * 1000).toLocaleDateString()}</b>
                 </p>
-                </Link>
+                
               </div>
             ))}
           </div>
@@ -180,8 +181,16 @@ function Noticias() {
         {imagenFullscreen !== null && (
         <div className="fullscreen-overlay" onClick={handleCloseFullscreen}>
           <div className="fullscreen-image-container">
-          <img src={datos[imagenFullscreen].imagenes[datos[imagenFullscreen].imagenes.length - 1]} alt={datos[imagenFullscreen].etiqueta} />
+            
+            <div>
+              <img src={datos[imagenFullscreen].imagenes[datos[imagenFullscreen].imagenes.length - 1]} alt={datos[imagenFullscreen].etiqueta} />
+              <button className="button">
+              <span className="X"></span>
+              <span className="Y"></span>
+            </button>
             <p>{datos[imagenFullscreen].etiqueta}</p>
+            </div>
+            
           </div>
         </div>
       )}

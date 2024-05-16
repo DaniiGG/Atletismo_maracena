@@ -5,7 +5,14 @@ import { auth } from './firebase.ts';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import './css/inscripciones.css';
 
+declare global {
+  interface Window {
+    paypal: any;
+  }
+}
+
 function Inscripciones() {
+  
   const [loaded, setLoaded] = useState(false);
   const [formData, setFormData] = useState({
     nombre: '',
@@ -90,6 +97,35 @@ function Inscripciones() {
     return () => unsubscribe();
   }, []);
 
+  // useEffect(() => {
+  //   const script = document.createElement('script');
+  //   script.src = 'https://www.sandbox.paypal.com/sdk/js?client-id=AczANP1djFkjD3Yaf06dyqNxTmMmZxHiqfbCQI3hgvZ6DaK9h3qAqsurBtIVNFEEmKj34QEw8LQCPWOz&vault=true&intent=subscription';
+  //   script.async = true;
+  //   script.onload = () => {
+  //     window.paypal.Buttons({
+  //       style: {
+  //         shape: 'rect',
+  //         color: 'blue',
+  //         layout: 'vertical',
+  //         label: 'subscribe'
+  //       },
+  //       createSubscription: function(data: any, actions: any) {
+  //         return actions.subscription.create({
+  //           plan_id: 'P-00970427S3164312KMY6JQ4I'
+  //         });
+  //       },
+  //       onApprove: function(data: any, actions: any) {
+  //         alert(data.subscriptionID); // Puedes agregar un mensaje opcional de éxito para el suscriptor aquí
+  //       }
+  //     }).render('#paypal-button-container-P-00970427S3164312KMY6JQ4I'); // Renderiza el botón de PayPal
+  //   };
+  //   document.body.appendChild(script);
+
+  //   return () => {
+  //     document.body.removeChild(script);
+  //   };
+  // }, []);
+
   return (
     <> 
       <div className='fotoInicial'>
@@ -99,31 +135,38 @@ function Inscripciones() {
         <h1 id="title">Inscríbete</h1><br></br>
         <p id="subtitle">¡Únete a nuestro club y comienza tu viaje hacia una vida más activa y saludable hoy mismo!</p>
       </div>
-      {message && <div className={`message ${error ? 'error' : 'success'}`}>{message}</div>}
-      <form className="inscripciones-form" onSubmit={handleSubmit}>
-      <div className="form-label">Nombre:</div>
-      <input className="form-input" type="text" name="nombre" value={formData.nombre} onChange={handleInputChange} required />
+      <article className='article'>
+          <div className='rectangulo'></div>
+              <h2>
+                Formulario de inscripción
+              </h2>
+          {message && <div className={`message ${error ? 'error' : 'success'}`}>{message}</div>}
+          <form className="inscripciones-form" onSubmit={handleSubmit}>
+          <div className="form-label">Nombre:</div>
+          <input className="form-input" type="text" name="nombre" value={formData.nombre} onChange={handleInputChange} required />
 
-      <div className="form-label">Apellidos:</div>
-      <input className="form-input" type="text" name="apellidos" value={formData.apellidos} onChange={handleInputChange} required />
+          <div className="form-label">Apellidos:</div>
+          <input className="form-input" type="text" name="apellidos" value={formData.apellidos} onChange={handleInputChange} required />
 
-      <div className="form-label">Email:</div>
-      <input className="form-input" type="email" name="email" value={formData.email} onChange={handleInputChange} required />
+          <div className="form-label">Email:</div>
+          <input className="form-input" type="email" name="email" value={formData.email} onChange={handleInputChange} required />
 
-      <div className="form-label">Teléfono:</div>
-      <input className="form-input" type="tel" name="telefono" value={formData.telefono} onChange={handleInputChange} onBlur={(e) => handleBlur('telefono', e.target.value)} required />
-      {errors.telefono && <div className="form-error">{errors.telefono}</div>}
+          <div className="form-label">Teléfono:</div>
+          <input className="form-input" type="tel" name="telefono" value={formData.telefono} onChange={handleInputChange} onBlur={(e) => handleBlur('telefono', e.target.value)} required />
+          {errors.telefono && <div className="form-error">{errors.telefono}</div>}
 
-      <div className="form-label">Dirección:</div>
-      <input className="form-input" type="text" name="direccion" value={formData.direccion} onChange={handleInputChange} required />
+          <div className="form-label">Dirección:</div>
+          <input className="form-input" type="text" name="direccion" value={formData.direccion} onChange={handleInputChange} required />
 
-      <div className="form-label">DNI:</div>
-      <input className="form-input" type="text" name="dni" value={formData.dni} onChange={handleInputChange} onBlur={(e) => handleBlur('dni', e.target.value)} required />
-      {errors.dni && <div className="form-error">{errors.dni}</div>}
+          <div className="form-label">DNI:</div>
+          <input className="form-input" type="text" name="dni" value={formData.dni} onChange={handleInputChange} onBlur={(e) => handleBlur('dni', e.target.value)} required />
+          {errors.dni && <div className="form-error">{errors.dni}</div>}
 
-      <button className="form-button" type="submit">Enviar</button>
+          <button className="form-button" type="submit">Enviar</button>
 
-    </form>
+        </form>
+          <div id="paypal-button-container-P-00970427S3164312KMY6JQ4I"></div>
+    </article>
     </>
   )
 }

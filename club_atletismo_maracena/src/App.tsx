@@ -90,8 +90,8 @@ function App() {
           </button>
         </div>
       </header>
-      <section className='hazañas-section'>
-        <article className='hazañas'>
+      <section className='section'>
+        <article className='hazañas article'>
           <div className='rectangulo'></div>
           <h2>
             Últimas noticias
@@ -116,14 +116,20 @@ function App() {
         {imagenFullscreen !== null && (
         <div className="fullscreen-overlay" onClick={handleCloseFullscreen}>
           <div className="fullscreen-image-container">
-          <img src={datos[imagenFullscreen].imagenes[datos[imagenFullscreen].imagenes.length - 1]} alt={datos[imagenFullscreen].etiqueta} />
+          <div>
+              <img src={datos[imagenFullscreen].imagenes[datos[imagenFullscreen].imagenes.length - 1]} alt={datos[imagenFullscreen].etiqueta} />
+              <button className="button">
+              <span className="X"></span>
+              <span className="Y"></span>
+            </button>
             <p>{datos[imagenFullscreen].etiqueta}</p>
+            </div>
           </div>
         </div>
       )}
       </section>
       <section className='valores-section'>
-        <article className='valores'>
+        <article className='valores article'>
         <div className='rectangulo'></div>
           <h2 id="valores-title">
             Nuestros valores

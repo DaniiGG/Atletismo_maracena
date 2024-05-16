@@ -69,7 +69,7 @@ function Login() {
                 let errorMessage = "Error al iniciar sesión con Facebook. Por favor, intenta de nuevo más tarde.";
                 switch (errorCode) {
                     case "auth/popup-closed-by-user":
-                        errorMessage = "El inicio de sesión con Facebook fue cancelado por el usuario.";
+                        errorMessage = "El inicio de sesión con Facebook fue cancelado.";
                         break;
                     default:
                         errorMessage = error.message;
@@ -113,7 +113,7 @@ function Login() {
                 let errorMessage = "Error al iniciar sesión con Google. Por favor, intenta de nuevo más tarde.";
                 switch (errorCode) {
                     case "auth/popup-closed-by-user":
-                        errorMessage = "El inicio de sesión con Google fue cancelado por el usuario.";
+                        errorMessage = "El inicio de sesión con Google fue cancelado.";
                         break;
                     default:
                         errorMessage = error.message;
@@ -205,59 +205,52 @@ function Login() {
       <h1 id="title">Inicia sesión</h1><br></br>
       <p id="subtitle">Únete a nuestro club de atletismo y mantente en movimiento. ¡Inicia sesión para empezar tu próxima carrera!</p>
       </div>
-      <div className="session-container">
-        {showLogin && (
-            <div className="login-container">
-                <h1>Iniciar Sesión</h1>
-                <form onSubmit={handleSubmit} id="all-form">
-                <div className="formulary">
-                {error && <p className="error-message">{error}</p>}
-                    <div className="inputBox">
-                        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-                        <h5>Email</h5>
+      <article className='article'>
+        <div className="session-container">
+            {showLogin && (
+                <div className="login-container">
+                    <h1>Iniciar Sesión</h1>
+                    <form onSubmit={handleSubmit} className="inscripciones-form">
+                    {error && <p className="error-message">{error}</p>}
+                        <div className="form-label">Email:</div>
+                            <input type="email" className="form-input" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                        <div className="form-label">Contraseña:</div>
+                            <input type="password" className="form-input" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                        <button className="form-button" type="submit">Iniciar Sesión</button>
+                        
+                    </form>
+                    
+                    <div className="social-login-buttons">
+                        <button className="google-login" onClick={logueoGoogle}><img src="../img/google.png"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Iniciar sesión con Google</button>
+                        <button className="facebook-login" onClick={logueoFacebook}><img src="../img/facebook.png"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Iniciar sesión con Facebook</button>
                     </div>
-                    <div className="inputBox">
-                        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-                        <h5>Contraseña</h5>
-                    </div>
-                    <button className="enter" type="submit">Iniciar Sesión</button>
-                    </div>
-                </form>
-                
-                <div className="social-login-buttons">
-                    <button className="google-login" onClick={logueoGoogle}><img src="../public/img/google.png"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Iniciar sesión con Google</button>
-                    <button className="facebook-login" onClick={logueoFacebook}><img src="../public/img/facebook.png"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Iniciar sesión con Facebook</button>
+                    <p>¿No tienes cuenta? <span onClick={() => setShowLogin(false)}>Regístrate</span></p>
+                    
                 </div>
-                <p>¿No tienes cuenta? <span onClick={() => setShowLogin(false)}>Regístrate</span></p>
-                
+            )}
+            {!showLogin && (
+                <div className="register-container">
+                    <h1>Registro</h1>
+                    <form onSubmit={handleRegisterSubmit} className="inscripciones-form">
+                    {error && <p className="error-message">{error}</p>}
+                        <div className="form-label">Nombre de usuario:</div>
+                            <input type="text" className="form-input" value={username} onChange={(e) => setUsername(e.target.value)} required />
+                        
+                        <div className="form-label">Email:</div>
+                            <input type="email" className="form-input" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                            
+                        
+                        <div className="form-label">Contraseña:</div>
+                            <input type="pass" className="form-input" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                        
+                        <button className="form-button" type="submit">Registrarse</button>
+                    
+                    </form>
+                    <p>¿Ya tienes cuenta? <span onClick={() => setShowLogin(true)}>Inicia Sesión</span></p>
+                </div>
+            )}
             </div>
-        )}
-        {!showLogin && (
-            <div className="register-container">
-                <h1>Registro</h1>
-                <form onSubmit={handleRegisterSubmit} id="all-form">
-                <div className="formulary">
-                {error && <p className="error-message">{error}</p>}
-                    <div className="inputBox">
-                            <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} required />
-                            <h5>Nombre de usuario*</h5>
-                    </div>
-                    <div className="inputBox">
-                            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-                            <h5>Correo Electrónico*</h5>
-                    </div>
-                    <div className="inputBox">
-                            <input type="pass" value={password} onChange={(e) => setPassword(e.target.value)} required />
-                            <h5>Contraseña*</h5>
-                    </div>
-                    <button className="enter" type="submit">Registrarse</button>
-                   
-                    </div>
-                </form>
-                <p>¿Ya tienes cuenta? <span onClick={() => setShowLogin(true)}>Inicia Sesión</span></p>
-            </div>
-        )}
-        </div>
+        </article>
     </>
   )
 }
