@@ -67,9 +67,18 @@ function HazañaDetalle() {
                 </button>
                 <p className='etiqueta'>{noticia.etiqueta}</p>
                 </div>
+                <div className='contenido-noticia'>
                 <h2>{noticia.titulo}</h2>
+                {noticia.contenido.split('\n').map((line: string, i: number) => {
+                  if (line.trim().startsWith('- ')) {
+                    return <li key={i}>{line.trim().substring(2)}</li>;
+                  } else {
+                    return <p key={i}>{line}</p>;
+                  }
+                })}
                 <p>{noticia.contenido}</p>
                 <p>{new Date(noticia.fecha.seconds * 1000).toLocaleDateString()}</p>
+                </div>
             </>
       ) : (
         <p>Cargando...</p>
