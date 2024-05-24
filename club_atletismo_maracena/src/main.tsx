@@ -22,6 +22,8 @@ import PageNotFound from './PageNotFound.tsx';
 import ScrollToTop from './ScrollToTop.tsx';
 import Administracion from './Administracion.tsx';
 import HazañaDetalle from './HazañaDetalle.tsx';
+import PoliticaCookies from './politicas/PoliticaCookies.tsx';
+import PoliticaPrivacidad from './politicas/PoliticaPrivacidad.tsx';
 
 const getUserRole = async (userId: string): Promise<string> => {
   try {
@@ -86,6 +88,8 @@ const AppRoutes = () => {
         <Route path="register" element={<><Navegacion /><Footer /></>} /> 
         <Route path="/noticia/:id" element={<><Navegacion /><HazañaDetalle/><Footer /></>} />
         <Route path="administracion" element={ <PrivateRoute  path="administracion" element={<><Administracion /></>} /> } />
+        <Route path="politica-cookies" element={<><Navegacion /><PoliticaCookies/><Footer /></>} />
+        <Route path="politica-privacidad" element={<><Navegacion /><PoliticaPrivacidad/><Footer /></>} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </Router>

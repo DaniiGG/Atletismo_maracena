@@ -98,13 +98,13 @@ footer > div{
 footer i{
   transition: all 0.3s ease;
 }
-footer i:first-child:hover{
+footer .fa-square-facebook:hover{
   color:#0866ff;
   transform: scale(1.15);
 }
 
-footer i:last-child:hover {
-  color:  #fb57d2; /* Change text color to ensure visibility */
+footer .fa-instagram:hover {
+  color:  #fb57d2; 
   transform: scale(1.15);
 }
 
@@ -123,13 +123,6 @@ footer a:visited{
   color: white;
 }
   
-
-
-@media (max-width: 1100px) {
-
-  
-
-}
 
 @media (max-width: 768px) {
 

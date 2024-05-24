@@ -22,6 +22,18 @@ function Galeria() {
     setImagenFullscreen(null);
   };
 
+  const handleNextImage = () => {
+    if (imagenFullscreen !== null && imagenFullscreen < images.length - 1) {
+      setImagenFullscreen(imagenFullscreen + 1);
+    }
+  };
+
+  const handlePrevImage = () => {
+    if (imagenFullscreen !== null && imagenFullscreen > 0) {
+      setImagenFullscreen(imagenFullscreen - 1);
+    }
+  };
+
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -79,7 +91,7 @@ function Galeria() {
       </section>
         )}
          {imagenFullscreen !== null && (
-        <div className="fullscreen-overlay" onClick={handleCloseFullscreen}>
+        <div className="fullscreen-overlay">
           <div className="fullscreen-image-container">
           {loading && (
             <div className="preloader">
@@ -92,12 +104,22 @@ function Galeria() {
             </div>
             )}
             <div>
-            <img src={images[imagenFullscreen].imagen} alt={images[imagenFullscreen].descripcion} onLoad={() => setLoading(false)} />
-              <button className="button">
-              <span className="X"></span>
-              <span className="Y"></span>
-            </button>
-            <p>{images[imagenFullscreen].descripcion}</p>
+              {imagenFullscreen > 0 && (
+              <button className="prev-button" onClick={handlePrevImage}>
+                  <div className="triangle2"/>
+                </button>
+              )}
+              <img src={images[imagenFullscreen].imagen} alt={images[imagenFullscreen].descripcion} onLoad={() => setLoading(false)} />
+                <button className="button"  onClick={handleCloseFullscreen}>
+                <span className="X"></span>
+                <span className="Y"></span>
+              </button>
+              {imagenFullscreen < images.length - 1 && (
+                <button className="next-button" onClick={handleNextImage}>
+                  <div className="triangle1"/>
+                </button>
+              )}
+              <p>{images[imagenFullscreen].descripcion}</p>
             </div>
             
           </div>

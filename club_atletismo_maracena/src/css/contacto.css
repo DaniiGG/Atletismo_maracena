@@ -1,4 +1,46 @@
 .mensaje-formulario{
     padding: 20px;
     border: 1px solid black;
+    text-align: justify;
+}
+
+.medios-contacto{
+    margin-top: 100px;
+    margin-bottom: 100px;
+    display:flex;
+    flex-flow: wrap;
+    align-items: center;
+    justify-content:space-evenly ;
+}
+
+.medios-contacto .contacto{
+    display: flex;
+    flex-direction: row;
+    align-items:center;
+    column-gap: 25px;
+}
+
+.medios-contacto .contacto i{
+    font-size: 4em;
+}
+
+.medios-contacto .contacto ul{
+    font-size: larger;
+    margin:25px 0 0 0;
+    padding: 0;
+}
+
+.medios-contacto .contacto ul a{
+    text-decoration: none;
+    word-break: break-word;
+
+}
+
+@media (max-width: 768px) {
+    .medios-contacto {
+        margin-top: 100px;
+        margin-bottom: 100px;
+        padding: 20px;
+        justify-content: flex-start;
+    }
 }

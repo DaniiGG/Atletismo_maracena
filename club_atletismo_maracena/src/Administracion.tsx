@@ -46,9 +46,11 @@ function Administracion() {
         fecha: '', 
         destacada: false,
       });
-      const [noticiaEditando, setNoticiaEditando] = useState<Noticia | null>(null);
-      const [imagenes, setImagenes] = useState<Imagen[]>([]);
-        const [nuevaImagen, setNuevaImagen] = useState<File | null>(null);
+    const [noticiaEditando, setNoticiaEditando] = useState<Noticia | null>(null);
+    const [imagenes, setImagenes] = useState<Imagen[]>([]);
+    const [nuevaImagen, setNuevaImagen] = useState<File | null>(null);
+    const [mostrarFormularioNoticia, setMostrarFormularioNoticia] = useState(false);
+    const [mostrarFormularioGaleria, setMostrarFormularioGaleria] = useState(false);
 
       const exportarAExcel = () => {
         const workbook = XLSX.utils.book_new();
@@ -97,7 +99,12 @@ function Administracion() {
     };
 
 
-    const handleEliminarNoticia = async (id: string) => {
+    const handleEliminarNoticia = async (id: string, titulo: string) => {
+        const confirmacion = window.confirm("¿Estás seguro de que deseas eliminar " + titulo + "?");
+        if (!confirmacion) {
+            return;
+        }
+    
         try {
             await deleteDoc(doc(firestore, 'hazañas', id));
             console.log("Noticia eliminada correctamente");
@@ -106,8 +113,13 @@ function Administracion() {
             console.error('Error al eliminar noticia:', error);
         }
     };
-
+    
     const handleEliminarImagen = async (id: string) => {
+        const confirmacion = window.confirm("¿Estás seguro de que deseas eliminar esta imagen?");
+        if (!confirmacion) {
+            return;
+        }
+    
         try {
             await deleteDoc(doc(firestore, 'imagenes', id));
             console.log("Imagen eliminada correctamente");
@@ -238,116 +250,137 @@ function Administracion() {
             <div className='administracion'>
             <div className="sidebar">
                 <ul>
+                    <hr></hr>
                     <li onClick={() => toggleSeccion("seccion1")}>Noticias</li>
+                    <hr></hr>
                     <li onClick={() => toggleSeccion("seccion2")}>Inscripciones</li>
+                    <hr></hr>
                     <li onClick={() => toggleSeccion("seccion3")}>Galería</li>
                 </ul>
             </div>
             <div className='secciones'>
+                
                 <div className={seccionAbierta === "seccion1" ? 'submenu-visible' : 'submenu-hidden'}>
-                    <h3>Control de noticias</h3>
+                    
+                    <div className='header-administracion'>
+                        <h1>{noticiaEditando ? 'Edita la noticia' : mostrarFormularioNoticia ? 'Inserta una noticia' : 'Control de noticias'}</h1>
+                        
+                        <button onClick={() => {
+                        if (noticiaEditando) {
+                            setNoticiaEditando(null);
+                        } else {
+                            setMostrarFormularioNoticia(!mostrarFormularioNoticia);
+                        }
+                        }}>
+                        { noticiaEditando || mostrarFormularioNoticia ? (<><i className="fa-solid fa-left-long"></i>&nbsp;&nbsp;&nbsp;{'Volver a la lista'} </> ): (<>{'Insertar noticia'}&nbsp;&nbsp;&nbsp; <i className="fa-solid fa-plus"></i></>)}
+                        </button>
+                    </div>
+                    {!mostrarFormularioNoticia && !noticiaEditando &&(
                     <div className="lista-noticias">
-                            {noticias.map(noticia => (
-                                <div key={noticia.id} className="noticia">
-                                    <h2>{noticia.titulo}</h2>
-                                    {noticia.contenido.split('\n').map((line, i) => {
-                                        if (line.trim().startsWith('- ')) {
-                                            return <li key={i}>{line.trim().substring(2)}</li>;
-                                        } else {
-                                            return <p key={i}>{line}</p>;
-                                        }
-                                    })}
-                                    <p><strong>Etiqueta:</strong> {noticia.etiqueta}</p>
-                                    <p><strong>Fecha:</strong> {new Date(noticia.fecha.seconds * 1000).toLocaleDateString()}</p>
-                                    <p><strong>Destacada:</strong> {noticia.destacada ? 'Sí' : 'No'}</p>
-                                    <button className="edit-button" type="button" onClick={() => handleEditarNoticia(noticia)}>
+                        {noticias.map(noticia => (
+                            <div key={noticia.id} className="noticia">
+                                <h4>{noticia.titulo}</h4>
+                                {noticia.contenido.split('\n').map((line, i) => {
+                                    if (line.trim().startsWith('- ')) {
+                                        return <li key={i}>{line.trim().substring(2)}</li>;
+                                    } else {
+                                        return <p key={i}>{line}</p>;
+                                    }
+                                })}
+                                <p><strong>Etiqueta:</strong> {noticia.etiqueta}</p>
+                                <p><strong>Fecha:</strong> {new Date(noticia.fecha.seconds * 1000).toLocaleDateString()}</p>
+                                <p><strong>Destacada:</strong> {noticia.destacada ? 'Sí' : 'No'}</p>
+                                <button className="edit-button" type="button" onClick={() => handleEditarNoticia(noticia)}>
 
-                                    <span className="button__text">Editar</span>
-                                    <span className="button__icon">
-                                    <svg className="svg-icon" fill="none" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><g stroke="#fff" strokeLinecap="round" strokeWidth="2"><path d="m20 20h-16"></path><path clipRule="evenodd" d="m14.5858 4.41422c.781-.78105 2.0474-.78105 2.8284 0 .7811.78105.7811 2.04738 0 2.82843l-8.28322 8.28325-3.03046.202.20203-3.0304z" fillRule="evenodd"></path></g></svg>
-                                    </span></button>
-                                    <button className="del-button" type="button" onClick={() => handleEliminarNoticia(noticia.id)}>
-                                    <span className="button__text">Eliminar</span>
-                                    <span className="button__icon">
-                                        <svg className="svg" height="512" viewBox="0 0 512 512" width="512" xmlns="http://www.w3.org/2000/svg">
-                                        <title></title>
-                                        <path d="M112,112l20,320c.95,18.49,14.4,32,32,32H348c17.67,0,30.87-13.51,32-32l20-320" style={{fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px'}}></path>
-                                        <line className="stroke:#fff;stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px" x1="80" x2="432" y1="112" y2="112"></line>
-                                        <path d="M192,112V72h0a23.93,23.93,0,0,1,24-24h80a23.93,23.93,0,0,1,24,24h0v40" style={{fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px'}}></path>
-                                        <line style={{fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px'}} x1="256" x2="256" y1="176" y2="400"></line>
-                                        <line style={{fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px'}} x1="184" x2="192" y1="176" y2="400"></line>
-                                        <line style={{fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px'}} x1="328" x2="320" y1="176" y2="400"></line>
-                                        </svg>
-                                    </span>
-                                    </button>
-                                </div>
+                                <span className="button__text">Editar</span>
+                                <span className="button__icon">
+                                <svg className="svg-icon" fill="none" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><g stroke="#fff" strokeLinecap="round" strokeWidth="2"><path d="m20 20h-16"></path><path clipRule="evenodd" d="m14.5858 4.41422c.781-.78105 2.0474-.78105 2.8284 0 .7811.78105.7811 2.04738 0 2.82843l-8.28322 8.28325-3.03046.202.20203-3.0304z" fillRule="evenodd"></path></g></svg>
+                                </span></button>
+                                <button className="del-button" type="button" onClick={() => handleEliminarNoticia(noticia.id, noticia.titulo)}>
+                                <span className="button__text">Eliminar</span>
+                                <span className="button__icon">
+                                    <svg className="svg" height="512" viewBox="0 0 512 512" width="512" xmlns="http://www.w3.org/2000/svg">
+                                    <title></title>
+                                    <path d="M112,112l20,320c.95,18.49,14.4,32,32,32H348c17.67,0,30.87-13.51,32-32l20-320" style={{fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px'}}></path>
+                                    <line className="stroke:#fff;stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px" x1="80" x2="432" y1="112" y2="112"></line>
+                                    <path d="M192,112V72h0a23.93,23.93,0,0,1,24-24h80a23.93,23.93,0,0,1,24,24h0v40" style={{fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px'}}></path>
+                                    <line style={{fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px'}} x1="256" x2="256" y1="176" y2="400"></line>
+                                    <line style={{fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px'}} x1="184" x2="192" y1="176" y2="400"></line>
+                                    <line style={{fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px'}} x1="328" x2="320" y1="176" y2="400"></line>
+                                    </svg>
+                                </span>
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                    )}
+                {mostrarFormularioNoticia && (
+                <div className="noticia-formulario">
+                    <form onSubmit={handleSubmitNoticia}>
+
+                        <input
+                            type="text"
+                            name="titulo"
+                            value={nuevaNoticia.titulo}
+                            onChange={handleChangeNoticia}
+                            placeholder="Título de la noticia"
+                            required
+                            className="input-titulo"
+                        />
+
+                        <textarea
+                            name="contenido"
+                            value={nuevaNoticia.contenido}
+                            onChange={handleChangeNoticia}
+                            placeholder="Contenido de la noticia"
+                            required
+                            className="input-contenido"
+                        />
+
+                        <input
+                            type="text"
+                            name="etiqueta"
+                            value={nuevaNoticia.etiqueta}
+                            onChange={handleChangeNoticia}
+                            placeholder="Etiqueta de la noticia"
+                            required
+                            className="input-etiqueta"
+                        />
+
+                        <input
+                            type="date"
+                            name="fecha"
+                            value={nuevaNoticia.fecha}
+                            onChange={handleChangeNoticia}
+                            required
+                            className="input-fecha"
+                        />
+
+                        <label className="checkbox-destacada">
+                            <input
+                                type="checkbox"
+                                name="destacada"
+                                checked={nuevaNoticia.destacada}
+                                onChange={() => setNuevaNoticia({ ...nuevaNoticia, destacada: !nuevaNoticia.destacada })}
+                            />
+                            Destacada
+                        </label>
+
+                        <input type="file" accept="image/*" onChange={handleImageChangeNoticia} multiple required className="input-imagen" />
+                        
+                        <div className="imagenes-previas">
+                            {nuevaNoticia.imagenes.map((imagen, index) => (
+                                <img key={index} src={imagen} alt={`Vista previa ${index}`} className="imagen-previa" />
                             ))}
                         </div>
-                    <div className="noticia-formulario">
-                        <form onSubmit={handleSubmitNoticia}>
+                        
+                        <button type="submit" className="boton-insertar">Insertar Noticia</button>
 
-                            <input
-                                type="text"
-                                name="titulo"
-                                value={nuevaNoticia.titulo}
-                                onChange={handleChangeNoticia}
-                                placeholder="Título de la noticia"
-                                required
-                                className="input-titulo"
-                            />
+                    </form>
+                </div>
+                )}
 
-                            <textarea
-                                name="contenido"
-                                value={nuevaNoticia.contenido}
-                                onChange={handleChangeNoticia}
-                                placeholder="Contenido de la noticia"
-                                required
-                                className="input-contenido"
-                            />
-
-                            <input
-                                type="text"
-                                name="etiqueta"
-                                value={nuevaNoticia.etiqueta}
-                                onChange={handleChangeNoticia}
-                                placeholder="Etiqueta de la noticia"
-                                required
-                                className="input-etiqueta"
-                            />
-
-                            <input
-                                type="date"
-                                name="fecha"
-                                value={nuevaNoticia.fecha}
-                                onChange={handleChangeNoticia}
-                                required
-                                className="input-fecha"
-                            />
-
-                            <label className="checkbox-destacada">
-                                <input
-                                    type="checkbox"
-                                    name="destacada"
-                                    checked={nuevaNoticia.destacada}
-                                    onChange={() => setNuevaNoticia({ ...nuevaNoticia, destacada: !nuevaNoticia.destacada })}
-                                />
-                                Destacada
-                            </label>
-
-                            <input type="file" accept="image/*" onChange={handleImageChangeNoticia} multiple required className="input-imagen" />
-                            
-                            <div className="imagenes-previas">
-                                {nuevaNoticia.imagenes.map((imagen, index) => (
-                                    <img key={index} src={imagen} alt={`Vista previa ${index}`} className="imagen-previa" />
-                                ))}
-                            </div>
-                            
-                            <button type="submit" className="boton-insertar">Insertar Noticia</button>
-
-                        </form>
-                    </div>
-
-                    {noticiaEditando && (
+                    {noticiaEditando &&  (
                             <div className="noticia-formulario">
                                 <form onSubmit={handleGuardarEdicionNoticia}>
                                     <input
@@ -435,7 +468,16 @@ function Administracion() {
                 </div>
 
                 <div className={seccionAbierta === "seccion3" ? 'submenu-visible' : 'submenu-hidden'}>
-                        <h3>Control de Imágenes</h3>
+                    <div className='header-administracion'>
+                        <h1>{mostrarFormularioGaleria ? 'Inserta una imagen' : 'Control de galería'}</h1>
+                        <button onClick={() => {
+                            setMostrarFormularioGaleria(!mostrarFormularioGaleria);
+                        }
+                        }>
+                        { mostrarFormularioGaleria ? (<><i className="fa-solid fa-left-long"></i>&nbsp;&nbsp;&nbsp;{'Volver a la lista'} </> ): (<>{'Insertar Imagen'}&nbsp;&nbsp;&nbsp; <i className="fa-solid fa-plus"></i></>)}
+                        </button>
+                    </div>
+                        {!mostrarFormularioGaleria &&(
                         <div className="lista-imagenes">
                             {imagenes.map(imagen => (
                                 <div key={imagen.id} className="imagen-item">
@@ -457,12 +499,16 @@ function Administracion() {
                                 </div>
                             ))}
                         </div>
-                        <div className="imagen-formulario">
+                        )}
+                        {mostrarFormularioGaleria && (
+                        <div className="noticia-formulario">
                             <form onSubmit={handleSubmitImagen}>
+                                <input type="date" name="fecha" id="fecha" placeholder="fecha" required/>
                                 <input type="file" accept="image/*" onChange={handleImageChangeImagen} required className="input-imagen" />
                                 <button type="submit" className="boton-insertar">Insertar Imagen</button>
                             </form>
                         </div>
+                        )}
                     </div>
             </div>
         </div>

@@ -6,7 +6,6 @@
 
 .flex-destacada{
   display: flex;
-  flex-direction: column;
   flex-flow: wrap;
   justify-content: space-evenly;
   padding: 40px;
@@ -25,6 +24,7 @@
 }
 .flex-destacada .carousel{
   width: 40%;
+  min-width: 480px;
   height: 55vh;
 }
 .flex-destacada .carousel-item img{
@@ -36,6 +36,8 @@
 }
 
 .contenido-destacada {
+  max-height: 55vh;
+  overflow-y: auto;
   width: 50%; 
 }
 
@@ -48,6 +50,16 @@
   position: relative;
   width: fit-content;
 }
+
+.filtros input, select{
+  border: none;
+  box-shadow: 0 2px 8px 2px rgba(0, 0, 0, 0.1), 0 6px 10px rgba(0, 0, 0, 0.1);
+  padding: 5px;
+}
+.filtros .input-container{
+  margin-bottom: 15px;
+}
+
 
 .input-container i {
   position: absolute;
@@ -133,3 +145,55 @@
     top:30px;
     right: 0;
   }
+
+  .pagination{
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+    font-size: larger;
+  }
+  .pagination a{
+    text-decoration: none;
+  }
+  .pagination .active{
+    color: black;
+    text-decoration: underline;
+  }
+
+  @media (max-width: 1340px) {
+    .flex-destacada{
+      row-gap: 20px;
+      justify-content: flex-start;
+    }
+    .contenido-destacada {
+      width: 100%; 
+    }
+    .flex-destacada .carousel{
+      width: 100%;
+      min-width: 0px;
+    }
+    .contenido-destacada {
+      overflow-y: unset;
+      max-height: unset;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .flex-destacada{
+      padding: 0;
+    }
+    .contenido-destacada {
+      font-size: 14px;
+      padding: 10px; 
+    }
+    .noticias-title{
+      margin-bottom: 100px;
+    }
+    .filtros{
+      top:120px;
+      left: 0;
+    }
+  }
+
+  

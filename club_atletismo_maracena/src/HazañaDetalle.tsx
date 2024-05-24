@@ -50,7 +50,7 @@ function HazañaDetalle() {
             
             <div id="carouselExampleControls" className="carousel slide" data-bs-ride="carousel">
                 <div className="carousel-inner">
-                {noticia.imagenes.map((imagen: string, index: number) => (
+                {noticia.imagenes.slice().reverse().map((imagen: string, index: number) => (
                     <div key={index} className={`carousel-item ${index === 0 ? 'active' : ''}`}>
                         <img src={imagen} className="d-block w-100" alt={`Imagen ${index + 1}`} />
                     </div>
