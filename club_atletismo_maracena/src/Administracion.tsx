@@ -6,6 +6,13 @@ import { Link } from "react-router-dom";
 import * as XLSX from 'xlsx';
 import './css/administracion.css';
 
+type Imagen = {
+    id: string;
+    imagen: string;
+    descripcion: string;
+    fecha: { seconds: number; nanoseconds: number };
+};
+
 type Noticia = {
     id: string;
     imagenes:string[];
@@ -29,7 +36,7 @@ type Seccion = "seccion1" | "seccion2" | "seccion3";
 
 function Administracion() {
     const [inscripciones, setInscripciones] = useState<Inscripcion[]>([]);
-    const [seccionAbierta, setSeccionAbierta] = useState<Seccion | null>(null); 
+    const [seccionAbierta, setSeccionAbierta] = useState<Seccion | null>("seccion1"); 
     const [noticias, setNoticias] = useState<Noticia[]>([]);
     const [nuevaNoticia, setNuevaNoticia] = useState({
         imagenes: [] as string[],
@@ -39,7 +46,11 @@ function Administracion() {
         fecha: '', 
         destacada: false,
       });
-      const [noticiaEditando, setNoticiaEditando] = useState<Noticia | null>(null);
+    const [noticiaEditando, setNoticiaEditando] = useState<Noticia | null>(null);
+    const [imagenes, setImagenes] = useState<Imagen[]>([]);
+    const [nuevaImagen, setNuevaImagen] = useState<File | null>(null);
+    const [mostrarFormularioNoticia, setMostrarFormularioNoticia] = useState(false);
+    const [mostrarFormularioGaleria, setMostrarFormularioGaleria] = useState(false);
 
       const exportarAExcel = () => {
         const workbook = XLSX.utils.book_new();
@@ -64,6 +75,7 @@ function Administracion() {
 
     useEffect(() => {
         cargarNoticias();
+        cargarImagenes();
     }, []);
 
     const cargarNoticias = async () => {
@@ -76,13 +88,44 @@ function Administracion() {
         }
     };
 
-    const handleEliminarNoticia = async (id: string) => {
+    const cargarImagenes = async () => {
+        try {
+            const querySnapshot = await getDocs(collection(firestore, 'imagenes'));
+            const imagenesData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Imagen));
+            setImagenes(imagenesData);
+        } catch (error) {
+            console.error('Error al cargar imágenes:', error);
+        }
+    };
+
+
+    const handleEliminarNoticia = async (id: string, titulo: string) => {
+        const confirmacion = window.confirm("¿Estás seguro de que deseas eliminar " + titulo + "?");
+        if (!confirmacion) {
+            return;
+        }
+    
         try {
             await deleteDoc(doc(firestore, 'hazañas', id));
             console.log("Noticia eliminada correctamente");
             cargarNoticias();
         } catch (error) {
             console.error('Error al eliminar noticia:', error);
+        }
+    };
+    
+    const handleEliminarImagen = async (id: string) => {
+        const confirmacion = window.confirm("¿Estás seguro de que deseas eliminar esta imagen?");
+        if (!confirmacion) {
+            return;
+        }
+    
+        try {
+            await deleteDoc(doc(firestore, 'imagenes', id));
+            console.log("Imagen eliminada correctamente");
+            cargarImagenes();
+        } catch (error) {
+            console.error('Error al eliminar imagen:', error);
         }
     };
 
@@ -94,12 +137,11 @@ function Administracion() {
         }
     };
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleChangeNoticia = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setNuevaNoticia({ ...nuevaNoticia, [name]: value });
       };
-
-      const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const handleImageChangeNoticia = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
             const files = Array.from(e.target.files);
     
@@ -124,7 +166,7 @@ function Administracion() {
         }
     };
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmitNoticia  = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
         const noticia = {
@@ -149,7 +191,7 @@ function Administracion() {
         setNoticiaEditando(noticia);
     };
 
-    const handleGuardarEdicion = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleGuardarEdicionNoticia = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!noticiaEditando) {
             console.error('No hay ninguna noticia para editar');
@@ -170,6 +212,30 @@ function Administracion() {
             console.error('Error al actualizar la noticia:', error);
         }
     };
+
+    const handleImageChangeImagen = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+            setNuevaImagen(e.target.files[0]);
+        }
+    };
+
+    const handleSubmitImagen = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (nuevaImagen) {
+            try {
+                const storageRef = ref(storage, `imagenes/${nuevaImagen.name}`);
+                await uploadBytes(storageRef, nuevaImagen);
+                console.log('Imagen subida correctamente');
+                const imagen = await getDownloadURL(storageRef);
+                await addDoc(collection(firestore, 'imagenes'), { imagen });
+                console.log('URL de la imagen guardada en Firestore');
+                setNuevaImagen(null);
+                cargarImagenes();
+            } catch (error) {
+                console.error('Error al subir la imagen:', error);
+            }
+        }
+    };
     
 
     return (
@@ -184,118 +250,139 @@ function Administracion() {
             <div className='administracion'>
             <div className="sidebar">
                 <ul>
+                    <hr></hr>
                     <li onClick={() => toggleSeccion("seccion1")}>Noticias</li>
+                    <hr></hr>
                     <li onClick={() => toggleSeccion("seccion2")}>Inscripciones</li>
-                    <li onClick={() => toggleSeccion("seccion3")}>Sección 3</li>
+                    <hr></hr>
+                    <li onClick={() => toggleSeccion("seccion3")}>Galería</li>
                 </ul>
             </div>
             <div className='secciones'>
+                
                 <div className={seccionAbierta === "seccion1" ? 'submenu-visible' : 'submenu-hidden'}>
-                    <h3>Control de noticias</h3>
+                    
+                    <div className='header-administracion'>
+                        <h1>{noticiaEditando ? 'Edita la noticia' : mostrarFormularioNoticia ? 'Inserta una noticia' : 'Control de noticias'}</h1>
+                        
+                        <button onClick={() => {
+                        if (noticiaEditando) {
+                            setNoticiaEditando(null);
+                        } else {
+                            setMostrarFormularioNoticia(!mostrarFormularioNoticia);
+                        }
+                        }}>
+                        { noticiaEditando || mostrarFormularioNoticia ? (<><i className="fa-solid fa-left-long"></i>&nbsp;&nbsp;&nbsp;{'Volver a la lista'} </> ): (<>{'Insertar noticia'}&nbsp;&nbsp;&nbsp; <i className="fa-solid fa-plus"></i></>)}
+                        </button>
+                    </div>
+                    {!mostrarFormularioNoticia && !noticiaEditando &&(
                     <div className="lista-noticias">
-                            {noticias.map(noticia => (
-                                <div key={noticia.id} className="noticia">
-                                    <h2>{noticia.titulo}</h2>
-                                    {noticia.contenido.split('\n').map((line, i) => {
-                                        if (line.trim().startsWith('- ')) {
-                                            return <li key={i}>{line.trim().substring(2)}</li>;
-                                        } else {
-                                            return <p key={i}>{line}</p>;
-                                        }
-                                    })}
-                                    <p><strong>Etiqueta:</strong> {noticia.etiqueta}</p>
-                                    <p><strong>Fecha:</strong> {new Date(noticia.fecha.seconds * 1000).toLocaleDateString()}</p>
-                                    <p><strong>Destacada:</strong> {noticia.destacada ? 'Sí' : 'No'}</p>
-                                    <button className="edit-button" type="button" onClick={() => handleEditarNoticia(noticia)}>
+                        {noticias.map(noticia => (
+                            <div key={noticia.id} className="noticia">
+                                <h4>{noticia.titulo}</h4>
+                                {noticia.contenido.split('\n').map((line, i) => {
+                                    if (line.trim().startsWith('- ')) {
+                                        return <li key={i}>{line.trim().substring(2)}</li>;
+                                    } else {
+                                        return <p key={i}>{line}</p>;
+                                    }
+                                })}
+                                <p><strong>Etiqueta:</strong> {noticia.etiqueta}</p>
+                                <p><strong>Fecha:</strong> {new Date(noticia.fecha.seconds * 1000).toLocaleDateString()}</p>
+                                <p><strong>Destacada:</strong> {noticia.destacada ? 'Sí' : 'No'}</p>
+                                <button className="edit-button" type="button" onClick={() => handleEditarNoticia(noticia)}>
 
-                                    <span className="button__text">Editar</span>
-                                    <span className="button__icon">
-                                    <svg className="svg-icon" fill="none" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><g stroke="#fff" strokeLinecap="round" strokeWidth="2"><path d="m20 20h-16"></path><path clipRule="evenodd" d="m14.5858 4.41422c.781-.78105 2.0474-.78105 2.8284 0 .7811.78105.7811 2.04738 0 2.82843l-8.28322 8.28325-3.03046.202.20203-3.0304z" fillRule="evenodd"></path></g></svg>
-                                    </span></button>
-                                    <button className="del-button" type="button" onClick={() => handleEliminarNoticia(noticia.id)}>
-                                    <span className="button__text">Eliminar</span>
-                                    <span className="button__icon">
-                                        <svg className="svg" height="512" viewBox="0 0 512 512" width="512" xmlns="http://www.w3.org/2000/svg">
-                                        <title></title>
-                                        <path d="M112,112l20,320c.95,18.49,14.4,32,32,32H348c17.67,0,30.87-13.51,32-32l20-320" style={{fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px'}}></path>
-                                        <line className="stroke:#fff;stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px" x1="80" x2="432" y1="112" y2="112"></line>
-                                        <path d="M192,112V72h0a23.93,23.93,0,0,1,24-24h80a23.93,23.93,0,0,1,24,24h0v40" style={{fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px'}}></path>
-                                        <line style={{fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px'}} x1="256" x2="256" y1="176" y2="400"></line>
-                                        <line style={{fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px'}} x1="184" x2="192" y1="176" y2="400"></line>
-                                        <line style={{fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px'}} x1="328" x2="320" y1="176" y2="400"></line>
-                                        </svg>
-                                    </span>
-                                    </button>
-                                </div>
+                                <span className="button__text">Editar</span>
+                                <span className="button__icon">
+                                <svg className="svg-icon" fill="none" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><g stroke="#fff" strokeLinecap="round" strokeWidth="2"><path d="m20 20h-16"></path><path clipRule="evenodd" d="m14.5858 4.41422c.781-.78105 2.0474-.78105 2.8284 0 .7811.78105.7811 2.04738 0 2.82843l-8.28322 8.28325-3.03046.202.20203-3.0304z" fillRule="evenodd"></path></g></svg>
+                                </span></button>
+                                <button className="del-button" type="button" onClick={() => handleEliminarNoticia(noticia.id, noticia.titulo)}>
+                                <span className="button__text">Eliminar</span>
+                                <span className="button__icon">
+                                    <svg className="svg" height="512" viewBox="0 0 512 512" width="512" xmlns="http://www.w3.org/2000/svg">
+                                    <title></title>
+                                    <path d="M112,112l20,320c.95,18.49,14.4,32,32,32H348c17.67,0,30.87-13.51,32-32l20-320" style={{fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px'}}></path>
+                                    <line className="stroke:#fff;stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px" x1="80" x2="432" y1="112" y2="112"></line>
+                                    <path d="M192,112V72h0a23.93,23.93,0,0,1,24-24h80a23.93,23.93,0,0,1,24,24h0v40" style={{fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px'}}></path>
+                                    <line style={{fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px'}} x1="256" x2="256" y1="176" y2="400"></line>
+                                    <line style={{fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px'}} x1="184" x2="192" y1="176" y2="400"></line>
+                                    <line style={{fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px'}} x1="328" x2="320" y1="176" y2="400"></line>
+                                    </svg>
+                                </span>
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                    )}
+                {mostrarFormularioNoticia && (
+                <div className="noticia-formulario">
+                    <form onSubmit={handleSubmitNoticia}>
+
+                        <input
+                            type="text"
+                            name="titulo"
+                            value={nuevaNoticia.titulo}
+                            onChange={handleChangeNoticia}
+                            placeholder="Título de la noticia"
+                            required
+                            className="input-titulo"
+                        />
+
+                        <textarea
+                            name="contenido"
+                            value={nuevaNoticia.contenido}
+                            onChange={handleChangeNoticia}
+                            placeholder="Contenido de la noticia"
+                            required
+                            className="input-contenido"
+                        />
+
+                        <input
+                            type="text"
+                            name="etiqueta"
+                            value={nuevaNoticia.etiqueta}
+                            onChange={handleChangeNoticia}
+                            placeholder="Etiqueta de la noticia"
+                            required
+                            className="input-etiqueta"
+                        />
+
+                        <input
+                            type="date"
+                            name="fecha"
+                            value={nuevaNoticia.fecha}
+                            onChange={handleChangeNoticia}
+                            required
+                            className="input-fecha"
+                        />
+
+                        <label className="checkbox-destacada">
+                            <input
+                                type="checkbox"
+                                name="destacada"
+                                checked={nuevaNoticia.destacada}
+                                onChange={() => setNuevaNoticia({ ...nuevaNoticia, destacada: !nuevaNoticia.destacada })}
+                            />
+                            Destacada
+                        </label>
+
+                        <input type="file" accept="image/*" onChange={handleImageChangeNoticia} multiple required className="input-imagen" />
+                        
+                        <div className="imagenes-previas">
+                            {nuevaNoticia.imagenes.map((imagen, index) => (
+                                <img key={index} src={imagen} alt={`Vista previa ${index}`} className="imagen-previa" />
                             ))}
                         </div>
-                    <div className="noticia-formulario">
-                        <form onSubmit={handleSubmit}>
+                        
+                        <button type="submit" className="boton-insertar">Insertar Noticia</button>
 
-                            <input
-                                type="text"
-                                name="titulo"
-                                value={nuevaNoticia.titulo}
-                                onChange={handleChange}
-                                placeholder="Título de la noticia"
-                                required
-                                className="input-titulo"
-                            />
+                    </form>
+                </div>
+                )}
 
-                            <textarea
-                                name="contenido"
-                                value={nuevaNoticia.contenido}
-                                onChange={handleChange}
-                                placeholder="Contenido de la noticia"
-                                required
-                                className="input-contenido"
-                            />
-
-                            <input
-                                type="text"
-                                name="etiqueta"
-                                value={nuevaNoticia.etiqueta}
-                                onChange={handleChange}
-                                placeholder="Etiqueta de la noticia"
-                                required
-                                className="input-etiqueta"
-                            />
-
-                            <input
-                                type="date"
-                                name="fecha"
-                                value={nuevaNoticia.fecha}
-                                onChange={handleChange}
-                                required
-                                className="input-fecha"
-                            />
-
-                            <label className="checkbox-destacada">
-                                <input
-                                    type="checkbox"
-                                    name="destacada"
-                                    checked={nuevaNoticia.destacada}
-                                    onChange={() => setNuevaNoticia({ ...nuevaNoticia, destacada: !nuevaNoticia.destacada })}
-                                />
-                                Destacada
-                            </label>
-
-                            <input type="file" accept="image/*" onChange={handleImageChange} multiple required className="input-imagen" />
-                            
-                            <div className="imagenes-previas">
-                                {nuevaNoticia.imagenes.map((imagen, index) => (
-                                    <img key={index} src={imagen} alt={`Vista previa ${index}`} className="imagen-previa" />
-                                ))}
-                            </div>
-                            
-                            <button type="submit" className="boton-insertar">Insertar Noticia</button>
-
-                        </form>
-                    </div>
-
-                    {noticiaEditando && (
+                    {noticiaEditando &&  (
                             <div className="noticia-formulario">
-                                <form onSubmit={handleGuardarEdicion}>
+                                <form onSubmit={handleGuardarEdicionNoticia}>
                                     <input
                                         type="text"
                                         name="titulo"
@@ -381,8 +468,48 @@ function Administracion() {
                 </div>
 
                 <div className={seccionAbierta === "seccion3" ? 'submenu-visible' : 'submenu-hidden'}>
-                    <h3>Contenido de la Sección 3</h3>
-                </div>
+                    <div className='header-administracion'>
+                        <h1>{mostrarFormularioGaleria ? 'Inserta una imagen' : 'Control de galería'}</h1>
+                        <button onClick={() => {
+                            setMostrarFormularioGaleria(!mostrarFormularioGaleria);
+                        }
+                        }>
+                        { mostrarFormularioGaleria ? (<><i className="fa-solid fa-left-long"></i>&nbsp;&nbsp;&nbsp;{'Volver a la lista'} </> ): (<>{'Insertar Imagen'}&nbsp;&nbsp;&nbsp; <i className="fa-solid fa-plus"></i></>)}
+                        </button>
+                    </div>
+                        {!mostrarFormularioGaleria &&(
+                        <div className="lista-imagenes">
+                            {imagenes.map(imagen => (
+                                <div key={imagen.id} className="imagen-item">
+                                    <img src={imagen.imagen} alt={`Imagen ${imagen.id}`} className="imagen-galeria" />
+                                    <button className="del-button" type="button" onClick={() => handleEliminarImagen(imagen.id)}>
+                                    <span className="button__text">Eliminar</span>
+                                        <span className="button__icon">
+                                            <svg className="svg" height="512" viewBox="0 0 512 512" width="512" xmlns="http://www.w3.org/2000/svg">
+                                                <title></title>
+                                                <path d="M112,112l20,320c.95,18.49,14.4,32,32,32H348c17.67,0,30.87-13.51,32-32l20-320" style={{ fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px' }}></path>
+                                                <line style={{ fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeMiterlimit: '10', strokeWidth: '32px' }} x1="80" x2="432" y1="112" y2="112"></line>
+                                                <path d="M192,112V72h0a23.93,23.93,0,0,1,24-24h80a23.93,23.93,0,0,1,24,24h0v40" style={{ fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px' }}></path>
+                                                <line style={{ fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px' }} x1="256" x2="256" y1="176" y2="400"></line>
+                                                <line style={{ fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px' }} x1="184" x2="192" y1="176" y2="400"></line>
+                                                <line style={{ fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px' }} x1="328" x2="320" y1="176" y2="400"></line>
+                                            </svg>
+                                        </span>
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                        )}
+                        {mostrarFormularioGaleria && (
+                        <div className="noticia-formulario">
+                            <form onSubmit={handleSubmitImagen}>
+                                <input type="date" name="fecha" id="fecha" placeholder="fecha" required/>
+                                <input type="file" accept="image/*" onChange={handleImageChangeImagen} required className="input-imagen" />
+                                <button type="submit" className="boton-insertar">Insertar Imagen</button>
+                            </form>
+                        </div>
+                        )}
+                    </div>
             </div>
         </div>
         </>

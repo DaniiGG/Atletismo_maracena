@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import './App.css';
 import { firestore } from './firebase.ts';
 import { collection, getDocs, orderBy, query, limit} from 'firebase/firestore';
+import { Link } from 'react-router-dom';
 import 'animate.css/animate.min.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 
@@ -13,6 +14,7 @@ interface Hazaña {
   titulo: string;
   contenido: string;
   etiqueta: string;
+  id:string
 }
 
 function App() {
@@ -32,7 +34,10 @@ function App() {
       try {
         const datosRef = query(collection(firestore, 'hazañas'), orderBy('fecha', 'desc'), limit(3)); 
         const snapshot = await getDocs(datosRef);
-        const datosObtenidos = snapshot.docs.map(doc => doc.data() as Hazaña);
+        const datosObtenidos = snapshot.docs.map((doc) => {
+          const data = doc.data() as Hazaña;
+          return { ...data, id: doc.id }; // Incluimos el ID del documento en los datos
+        });
         setDatos(datosObtenidos);
       } catch (error) {
         console.error('Error al obtener los datos:', error);
@@ -60,7 +65,7 @@ function App() {
           </div>
           <div className="carousel-inner">
             <div className="carousel-item active">
-              <img src="../img/pistaAtletismo.jpeg" height="" width="" className="d-block w-100" loading="lazy" alt="Pista de atletismo" />
+              <img src="../img/pista_atletismo_ia.jpg" height="" width="" className="d-block w-100" loading="lazy" alt="Pista de atletismo" />
               <div className="carousel-caption d-md-block animate__animated animate__fadeIn">
                 <h5 className="animate__animated animate__fadeInDown">Bienvenido a</h5>
                 <p>Club Atletismo Maracena</p>
@@ -73,10 +78,10 @@ function App() {
               </div>
             </div>
             <div className="carousel-item">
-              <img src="../img/imagen-medalla-sierraB.jpg" height="" width="" className="d-block w-100" loading="lazy" alt="Tercera foto" />
+              <img src="../img/imagen_medalla_montañaB.jpg" height="" width="" className="d-block w-100" loading="lazy" alt="Tercera foto" />
               <div className="carousel-caption d-md-block animate__animated animate__fadeIn">
-              <h5 className="animate__animated animate__fadeInDown">Third slide label</h5>
-              <p className="animate__animated animate__fadeInDown">Estamos a full</p>
+              <h5 className="animate__animated animate__fadeInDown">Consigue victorias</h5>
+              <p className="animate__animated animate__fadeInDown">A nuestro lado</p>
               </div>
             </div>
           </div>
@@ -90,8 +95,8 @@ function App() {
           </button>
         </div>
       </header>
-      <section className='hazañas-section'>
-        <article className='hazañas'>
+      <section className='section'>
+        <article className='hazañas article'>
           <div className='rectangulo'></div>
           <h2>
             Últimas noticias
@@ -106,7 +111,9 @@ function App() {
                 <p className='etiqueta'>{dato.etiqueta}</p>
                 <div className='lupa'> <i className="fa-solid fa-magnifying-glass fa-2xl"></i></div>
                 </div>
-                <h5>{dato.titulo}</h5>
+                <Link to={`/noticia/${dato.id}`} className='news-link'>
+                <h5>{dato.titulo}&nbsp;<i className="fa-solid fa-arrow-up-right-from-square"></i></h5>
+                </Link>
                 <p className='content'>{dato.contenido.length > 100 ? dato.contenido.slice(0, 150) + '...' : dato.contenido}</p>
                 <p className='content'><b>{new Date(dato.fecha.seconds * 1000).toLocaleDateString()}</b></p>
               </div>
@@ -116,20 +123,26 @@ function App() {
         {imagenFullscreen !== null && (
         <div className="fullscreen-overlay" onClick={handleCloseFullscreen}>
           <div className="fullscreen-image-container">
-          <img src={datos[imagenFullscreen].imagenes[datos[imagenFullscreen].imagenes.length - 1]} alt={datos[imagenFullscreen].etiqueta} />
+          <div>
+              <img src={datos[imagenFullscreen].imagenes[datos[imagenFullscreen].imagenes.length - 1]} alt={datos[imagenFullscreen].etiqueta} />
+              <button className="button">
+              <span className="X"></span>
+              <span className="Y"></span>
+            </button>
             <p>{datos[imagenFullscreen].etiqueta}</p>
+            </div>
           </div>
         </div>
       )}
       </section>
       <section className='valores-section'>
-        <article className='valores'>
+        <article className='valores article'>
         <div className='rectangulo'></div>
           <h2 id="valores-title">
             Nuestros valores
           </h2>
           <div className='valores-content'>
-            <p>En el Club Atletismo Maracena, nos enorgullece ser más que un simple lugar de entrenamiento. Somos una familia unida por nuestra pasión por el atletismo y nuestra dedicación a valores que trascienden las fronteras de la pista. En nuestro club, cada atleta, entrenador y miembro del personal encuentra un hogar donde el compañerismo, el respeto y la superación personal son fundamentales en cada paso que damos juntos. Desde los jóvenes que dan sus primeros pasos en la pista hasta los atletas más experimentados que buscan alcanzar nuevas metas, todos son acogidos con los brazos abiertos en un ambiente donde la excelencia deportiva va de la mano con el crecimiento personal y el apoyo mutuo. Aquí, en el corazón del Club Atletismo Maracena, nuestros valores son más que palabras; son la esencia misma de lo que somos y de lo que aspiramos a ser como comunidad deportiva.</p>
+            <p>En <b>Club Atletismo Maracena</b>, nos enorgullece ser más que un simple lugar de entrenamiento. Somos una familia unida por nuestra pasión por el atletismo y nuestra dedicación a valores que trascienden las fronteras de la pista. En nuestro club, cada atleta, entrenador y miembro del personal encuentra un hogar donde el <b>compañerismo</b>, el <b>respeto</b> y la <b>superación personal</b> son fundamentales en cada paso que damos juntos. Desde los jóvenes que dan sus primeros pasos en la pista hasta los atletas más experimentados que buscan <b>alcanzar nuevas metas</b>, todos son acogidos con los brazos abiertos en un ambiente donde la excelencia deportiva va de la mano con el <b>crecimiento personal</b> y el <b>apoyo mutuo</b>. Aquí, en el corazón del Club Atletismo Maracena, nuestros valores son más que palabras; son la esencia misma de lo que somos y de lo que aspiramos a ser como comunidad deportiva.</p>
 
           <div className="valores-parte2">
             <div className='slider'>

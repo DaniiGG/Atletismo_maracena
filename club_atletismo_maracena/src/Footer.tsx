@@ -35,20 +35,20 @@ function Footer() {
             <div className='subfooter'>
                 <div className="subfooter-parte1">
                 <div id="inicio">
-                    <img id="logo" src="../img/logoAtletismo.png"></img>
+                    <img id="logo" src="../img/logoAtletismo.png" alt="logo atletismo maracena"></img>
                     <Link to="/">CLUB ATLETISMO <br/><b>MARACENA</b></Link>
                 </div>
                     <div className="redes2">
-                        <i className="fa-brands fa-square-facebook fa-2xl"></i>&nbsp;&nbsp;&nbsp;
-                        <i className="fa-brands fa-instagram fa-2xl"></i>
+                        <a target="_blank" href="https://www.facebook.com/clubatletismomaracena/?locale=es_ES"><i className="fa-brands fa-square-facebook fa-2xl"></i></a>&nbsp;&nbsp;&nbsp;
+                        <a target="_blank" href="https://www.instagram.com/club_atletismo_maracena/"><i className="fa-brands fa-instagram fa-2xl"></i></a>
                     </div>
                 </div>
                 <div>
-                    <p><Link to="">Aviso legal</Link>&nbsp;|&nbsp;<Link to="">Política de cookies</Link>&nbsp;|&nbsp;<Link to="">Política de privacidad</Link></p>
+                    <p><Link to="">Aviso legal</Link>&nbsp;|&nbsp;<Link to="/politica-cookies">Política de cookies</Link>&nbsp;|&nbsp;<Link to="/politica-privacidad">Política de privacidad</Link></p>
                 </div>
                 <div className="redes">
-                    <i className="fa-brands fa-square-facebook fa-2xl"></i>&nbsp;&nbsp;&nbsp;
-                    <i className="fa-brands fa-instagram fa-2xl"></i>
+                    <a target="_blank" href="https://www.facebook.com/clubatletismomaracena/?locale=es_ES"><i className="fa-brands fa-square-facebook fa-2xl"></i></a>&nbsp;&nbsp;&nbsp;
+                    <a target="_blank" href="https://www.instagram.com/club_atletismo_maracena/"><i className="fa-brands fa-instagram fa-2xl"></i></a>
                 </div>
             </div>
         </footer>

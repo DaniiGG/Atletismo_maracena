@@ -22,7 +22,7 @@ function Noticias() {
   const [searchTerm, setSearchTerm] = useState("");
   const [orderByDate, setOrderByDate] = useState<'asc' | 'desc'>('desc');
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 8;
   const [imagenFullscreen, setImagenFullscreen] = useState<number | null>(null);
 
   const handleImagenClick = (index: number) => {
@@ -57,7 +57,6 @@ function Noticias() {
     obtenerDatos();
   }, [orderByDate]);
 
-
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -72,7 +71,60 @@ function Noticias() {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentData = filteredData.slice(indexOfFirstItem, indexOfLastItem);
 
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
+  const renderPagination = () => {
+    const pageNumbers = [];
+
+    if (totalPages <= 5) {
+      for (let i = 1; i <= totalPages; i++) {
+        pageNumbers.push(i);
+      }
+    } else {
+      pageNumbers.push(1);
+  
+      if (currentPage > 3) {
+        pageNumbers.push('...');
+      }
+      const startPage = Math.max(currentPage - 1, 2);
+      const endPage = Math.min(currentPage + 1, totalPages - 1);
+      for (let i = startPage; i <= endPage; i++) {
+        pageNumbers.push(i);
+      }
+  
+      if (currentPage < totalPages - 2) {
+        pageNumbers.push('...');
+      }
+  
+      pageNumbers.push(totalPages);
+    }
+
+    return (
+      <div className="pagination">
+        {currentPage > 1 && (
+          <a onClick={() => paginate(currentPage - 1)}>&lt; </a>
+        )}
+        {pageNumbers.map((number, index) =>
+          typeof number === 'string' ? (
+            <span key={index}>{number}&nbsp;</span>
+          ) : (
+            <a
+              key={index}
+              onClick={() => paginate(number)}
+              className={number === currentPage ? 'active' : ''}
+            >
+              &nbsp;{number}&nbsp;
+            </a>
+          )
+        )}
+        {currentPage < totalPages && (
+          <a onClick={() => paginate(currentPage + 1)}> &gt;</a>
+        )}
+      </div>
+    );
+  };
 
   return (
     <>
@@ -80,11 +132,11 @@ function Noticias() {
         <img src='../img/imagen-slider3.png' loading="lazy" alt='Imagen inicial'></img>
       </div>
       <div className={`main-title ${loaded ? 'loaded' : ''}`}>
-      <h1 id="title">Noticias del club</h1><br></br>
-      <p id="subtitle">¡Mantente al tanto de todas las novedades, eventos y logros de nuestro club!</p>
+        <h1 id="title">Noticias del club</h1><br></br>
+        <p id="subtitle">¡Mantente al tanto de todas las novedades, eventos y logros de nuestro club!</p>
       </div>
-      <section className='hazañas-section'>
-      {loading ? ( // Preloader si está cargando
+      <section className='section'>
+        {loading ? ( // Preloader si está cargando
           <div className="preloader">
             <div className="loading-wave">
               <div className="loading-bar"></div>
@@ -95,105 +147,103 @@ function Noticias() {
           </div>
         ) : (
           <>
-        {destacada && (
-          <article className='hazañas'>
-            <div className='rectangulo'></div>
-            <h2>Noticia Destacada</h2>
-            <div className='flex-destacada'>
-            <div id="carouselExampleControls" className="carousel slide" data-bs-ride="carousel">
-              <div className="carousel-inner">
-                {destacada.imagenes.map((imagen, index) => (
-                  <div key={index} className={`carousel-item ${index === 0 ? 'active' : ''}`}>
-                    <img src={imagen} className="d-block w-100" alt={`Imagen ${index + 1}`} />
+            {destacada && (
+              <article className='hazañas article'>
+                <div className='rectangulo'></div>
+                <h2>Noticia Destacada</h2>
+                <div className='flex-destacada'>
+                  <div id="carouselExampleControls" className="carousel slide" data-bs-ride="carousel">
+                    <div className="carousel-inner">
+                      {destacada.imagenes.map((imagen, index) => (
+                        <div key={index} className={`carousel-item ${index === 0 ? 'active' : ''}`}>
+                          <img src={imagen} className="d-block w-100" alt={`Imagen ${index + 1}`} />
+                        </div>
+                      ))}
+                    </div>
+                    <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                      <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                      <span className="visually-hidden">Previous</span>
+                    </button>
+                    <button className="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                      <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                      <span className="visually-hidden">Next</span>
+                    </button>
+                    <p className='etiqueta'>{destacada.etiqueta}</p>
+                  </div>
+                  <div className='contenido-destacada'>
+                    <h5>{destacada.titulo}</h5>
+                    {destacada.contenido.split('\n').map((line, i) => {
+                      if (line.trim().startsWith('- ')) {
+                        return <li key={i}>{line.trim().substring(2)}</li>;
+                      } else {
+                        return <p key={i}>{line}</p>;
+                      }
+                    })}
+                    <p>
+                      <b>{new Date(destacada.fecha.seconds * 1000).toLocaleDateString()}</b>
+                    </p>
+                  </div>
+                </div>
+              </article>
+            )}
+
+            <article className='hazañas article'>
+              <div className='filtros'>
+                <div className="input-container">
+                  <i className="fas fa-search"></i>
+                  <input
+                    type="text"
+                    placeholder="Buscar por título..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </div>
+
+                <select value={orderByDate} onChange={(e) => setOrderByDate(e.target.value as 'asc' | 'desc')}>
+                  <option value="desc">Fecha (Desc.)</option>
+                  <option value="asc">Fecha (Asc.)</option>
+                </select>
+              </div>
+              <div className='rectangulo'></div>
+              <h2 className='noticias-title'>Noticias del club</h2>
+              <div className='flex-hazañas'>
+                {currentData.map((dato, index) => (
+                  <div key={dato.id} className='hazaña'>
+                    <div className='imagen-hazaña' onClick={() => handleImagenClick(index)}>
+                      {dato.imagenes && dato.imagenes.length > 0 && (
+                        <img src={dato.imagenes[dato.imagenes.length - 1]} alt={dato.etiqueta} />
+                      )}
+                      <p className='etiqueta'>{dato.etiqueta}</p>
+                      <div className='lupa'> <i className="fa-solid fa-magnifying-glass fa-2xl"></i></div>
+                    </div>
+                    <Link to={`/noticia/${dato.id}`} className='news-link'>
+                      <h5>{dato.titulo}&nbsp;<i className="fa-solid fa-arrow-up-right-from-square"></i></h5>
+                    </Link>
+                    <p className='content'>{dato.contenido.length > 100 ? dato.contenido.slice(0, 130) + '...' : dato.contenido}</p>
+                    <p className='content'>
+                      <b>{new Date(dato.fecha.seconds * 1000).toLocaleDateString()}</b>
+                    </p>
                   </div>
                 ))}
-                
               </div>
-              <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
-                <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span className="visually-hidden">Previous</span>
-              </button>
-              <button className="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
-                <span className="carousel-control-next-icon" aria-hidden="true"></span>
-                <span className="visually-hidden">Next</span>
-              </button>
-              <p className='etiqueta'>{destacada.etiqueta}</p>
-            </div>
-              <div className='contenido-destacada'>
-                <h5>{destacada.titulo}</h5>
-                {destacada.contenido.split('\n').map((line, i) => {
-                  if (line.trim().startsWith('- ')) {
-                    return <li key={i}>{line.trim().substring(2)}</li>;
-                  } else {
-                    return <p key={i}>{line}</p>;
-                  }
-                })}
-                <p>
-                  <b>{new Date(destacada.fecha.seconds * 1000).toLocaleDateString()}</b>
-                </p>
-              </div>
-            </div>
-          </article>
-        )}
-
-
-        <article className='hazañas'>
-          <div className='filtros'>
-          <div className="input-container">
-            <i className="fas fa-search"></i>
-            <input 
-              type="text" 
-              placeholder="Buscar por título..." 
-              value={searchTerm} 
-              onChange={(e) => setSearchTerm(e.target.value)} 
-            />
-          </div>
-
-          <select value={orderByDate} onChange={(e) => setOrderByDate(e.target.value as 'asc' | 'desc')}>
-            <option value="desc">Fecha (Desc.)</option>
-            <option value="asc">Fecha (Asc.)</option>
-          </select>
-        </div>
-        <div className='rectangulo'></div>
-          <h2>Noticias del club</h2>
-          <div className='flex-hazañas'>
-            {currentData.map((dato, index) => (
-              <div key={dato.id} className='hazaña'>
-                <div className='imagen-hazaña' onClick={() => handleImagenClick(index)}>
-                {dato.imagenes && dato.imagenes.length > 0 && (
-                  <img src={dato.imagenes[dato.imagenes.length - 1]} alt={dato.etiqueta} />
-                )}
-                  <p className='etiqueta'>{dato.etiqueta}</p>
-                  <div className='lupa'> <i className="fa-solid fa-magnifying-glass fa-2xl"></i></div>
+              {renderPagination()}
+            </article>
+            {imagenFullscreen !== null && (
+              <div className="fullscreen-overlay" onClick={handleCloseFullscreen}>
+                <div className="fullscreen-image-container">
+                  <div>
+                    <img src={datos[imagenFullscreen].imagenes[datos[imagenFullscreen].imagenes.length - 1]} alt={datos[imagenFullscreen].etiqueta} />
+                    <button className="button">
+                      <span className="X"></span>
+                      <span className="Y"></span>
+                    </button>
+                    <p>{datos[imagenFullscreen].etiqueta}</p>
+                  </div>
                 </div>
-                <Link to={`/noticia/${dato.id}`} className='news-link'>
-                <h5>{dato.titulo}</h5>
-                <p className='content'>{dato.contenido.length > 100 ? dato.contenido.slice(0, 130) + '...' : dato.contenido}</p>
-                <p className='content'>
-                  <b>{new Date(dato.fecha.seconds * 1000).toLocaleDateString()}</b>
-                </p>
-                </Link>
               </div>
-            ))}
-          </div>
-        </article>
-        {imagenFullscreen !== null && (
-        <div className="fullscreen-overlay" onClick={handleCloseFullscreen}>
-          <div className="fullscreen-image-container">
-          <img src={datos[imagenFullscreen].imagenes[datos[imagenFullscreen].imagenes.length - 1]} alt={datos[imagenFullscreen].etiqueta} />
-            <p>{datos[imagenFullscreen].etiqueta}</p>
-          </div>
-        </div>
-      )}
-
-        <div className="pagination">
-        {Array.from({ length: Math.ceil(filteredData.length / itemsPerPage) }).map((_, index) => (
-          <button key={index} onClick={() => paginate(index + 1)}>
-            {index + 1}
-          </button>
-        ))}
-      </div>
-      </>
+            )}
+            
+          </>
         )}
       </section>
     </>

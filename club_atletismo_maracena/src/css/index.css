@@ -15,7 +15,9 @@
 body{
   background-color: rgb(243, 250, 255);
 }
-
+.section{
+  margin-top: 60px;
+}
 .fotoInicial {
   position: relative;
   box-shadow: 0px 2px 4px rgb(0, 0, 0);
@@ -98,6 +100,11 @@ body{
   color: #008000; 
   border-right: 8px solid #008000;
 }
+
+.cky-btn-revisit-wrapper {
+  background: #4062f7 !important;
+}
+
 @keyframes slideIn {
   from {
     left: -100%; 

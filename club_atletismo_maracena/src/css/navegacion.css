@@ -151,7 +151,7 @@ body {
       width: 50px;
     }
 
-    .menu-hamburguesa a:link, a:visited{
+    .menu-hamburguesa a:link, .menu-hamburguesa a:visited{
         color:white;
         text-decoration: none;
     }

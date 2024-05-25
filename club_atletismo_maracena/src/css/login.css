@@ -4,8 +4,20 @@ cursor: pointer;
 }
 
 #all-form{
-    margin-left: 30%;
     width: 40%;
+}
+
+.login-container{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+.register-container{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
 }
 
 .formulary {
@@ -56,7 +68,8 @@ cursor: pointer;
 }
 
 .inputBox input:valid~h5,
-.inputBox input:focus~h5
+.inputBox input:focus~h5,
+.inputBox textarea:focus~h5
  {
     transform: translateX(5px) translateY(-44px);
     font-size: 0.8em;
@@ -97,6 +110,12 @@ cursor: pointer;
     font-weight: bolder;
 }
 
+.social-login-buttons{
+    display: flex;
+    flex-direction: column;
+    row-gap: 15px;
+}
+
 .social-login-buttons button{
     padding: 10px;
     border: 1px solid black;
@@ -118,4 +137,8 @@ cursor: pointer;
 .facebook-login{
     background-image: linear-gradient(to top right, #0163E0,#18ACFE);
     color: white;
+}
+
+.error-message{
+    color:red;
 }

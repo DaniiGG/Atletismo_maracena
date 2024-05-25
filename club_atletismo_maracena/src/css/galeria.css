@@ -1,0 +1,78 @@
+.grid-container {
+    columns: 4 300px;
+    margin: 100px;
+  }
+  
+  .image {
+    break-inside: avoid;
+    width: 100%;
+  }
+  
+  .image img {
+    width: 100%;
+    height: auto;
+    display: block;
+    margin-bottom: 15px;
+  }
+  
+  /* Transiciones y efectos */
+  .image img {
+    transition: transform 0.3s ease;
+  }
+  
+  .image:hover img {
+    transform: scale(1.05);
+  }
+
+  .grid-container .descripcion{
+    position: absolute;
+    background-color: blue;
+    z-index: 200;
+    bottom:10px
+  }
+
+  .fullscreen-image-container div .next-button, .prev-button{
+    position: absolute;
+    top:45%;
+    width: 4em;
+    height: 4em;
+    border: none;
+    border-radius: 5px;
+    background-color: transparent;
+    z-index: 999;
+  }
+
+  .fullscreen-image-container > div .prev-button {
+    left: -100px;
+    transition: all 0.3s ease;
+  }
+  .fullscreen-image-container > div .next-button {
+    right: -100px;
+    transition: all 0.3s ease;
+  }
+  .fullscreen-image-container > div .next-button:hover, .prev-button:hover {
+    transform: scale(1.15);
+  }
+
+
+ .triangle1 {
+  --b:10px; 
+  aspect-ratio: cos(30deg);
+  clip-path: polygon(100% 50%,0 100%,0 0,100% 50%,calc(100% - var(--b)) 50%,calc(var(--b)/2) calc(var(--b)*cos(30deg)), calc(var(--b)/2) calc(100% - var(--b)*cos(30deg)),calc(100% - var(--b)) 50%);
+  background: linear-gradient(45deg, #ffffff 0%, #ffffff 20%, #2d3db8 60%, #2d3db8 100%);
+}
+
+.triangle2 {
+  --b:10px; 
+
+  aspect-ratio: cos(30deg);
+  clip-path: polygon(0 50%,100% 100%,100% 0,0 50%,var(--b) 50%,calc(100% - var(--b)/2) calc(var(--b)*cos(30deg)), calc(100% - var(--b)/2) calc(100% - var(--b)*cos(30deg)),var(--b) 50%);
+  background: linear-gradient(45deg, #2d3db8 0%, #2d3db8 40%, #ffffff 80%, #ffffff 100%);
+
+}
+
+  @media (max-width: 1050px) {
+    .grid-container {
+      margin: 20px;
+    }
+  }

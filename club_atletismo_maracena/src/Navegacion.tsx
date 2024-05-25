@@ -98,7 +98,7 @@ function Navegacion() {
             boxShadow: showShadow ? '0px 2px 4px rgb(0, 0, 0)' : 'none' }}>
           <nav>
             <div id="inicio" className='inicio1'>
-                    <img id="logo" src="../img/logoAtletismo.png"></img>
+                    <img id="logo" src="../img/logoAtletismo.png" alt="logo atletismo maracena"></img>
                     <Link to="/">CLUB ATLETISMO <br/><b>MARACENA</b></Link>
             </div>
             <ul>

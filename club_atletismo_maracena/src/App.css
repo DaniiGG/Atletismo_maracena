@@ -1,7 +1,4 @@
 /* SLIDER INICIAL */
-.carousel{
-  box-shadow: 0px 2px 4px rgb(0, 0, 0);
-}
 .carousel-item {
   position: relative;
 }
@@ -30,6 +27,8 @@ header .carousel-item::before {
 }
 .carousel-caption h5 {
    font-family: "Montserrat", sans-serif;
+   font-style: italic;
+   font-weight: bolder;
   font-size: 5rem;
   font-size: calc(1em + 3vw);
 }
@@ -40,7 +39,7 @@ header .carousel-item::before {
 /* FIN DE LA CONFIGURACIÓN DEL SLIDER */
 
 /* SECCIÓNES DE INICIO */
-.hazañas, .valores{
+.article{
   margin: 20px 150px;
   font-family:"Montserrat", sans-serif;
 }
@@ -48,7 +47,7 @@ header .carousel-item::before {
   font-family: "Bebas Neue", sans-serif;
   width: fit-content;
   font-size: calc(1em + 2.5vw);
-  margin: 0 0 70px 0;
+  margin: 0 0 30px 0;
 }
 #valores-title{
   margin-bottom: 20px;
@@ -61,9 +60,6 @@ header .carousel-item::before {
 } 
 
 /* SECCIÓN DE HAZAÑAS/NOTICIAS */
-.hazañas-section{
-  margin-top: 100px;
-}
 .flex-hazañas{
   display: flex;
   flex-wrap: wrap;
@@ -104,7 +100,6 @@ text-align: center;
   width: 100%; 
   height: 250px;
   transition: transform 0.2s ease;
-  border-radius: 5px;
   object-fit: cover;
 }
 
@@ -112,7 +107,6 @@ text-align: center;
   position: relative;
   overflow: hidden; 
   width: 100%; 
-  border-radius: 5px;
 }
 
 .imagen-hazaña::before {
@@ -125,7 +119,6 @@ text-align: center;
   background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.6));
   opacity: 0;
   transition: opacity 0.3s ease;
-  border-radius: 5px;
 }
 
 .imagen-hazaña:hover::before {
@@ -187,11 +180,13 @@ margin-bottom: 30px;
   display: flex;
   flex-flow: wrap;
   align-items: center;
-justify-content: space-evenly;
+justify-content: space-between;
 }
 .conjunto-valores{
   display:grid;
+  width: 50%;
   grid-template-columns: 1fr 1fr 1fr;
+  justify-items: center;
 }
 .skill-element{
   width: 100px;
@@ -243,13 +238,75 @@ justify-content: space-evenly;
   z-index: 9999;
 }
 .fullscreen-image-container {
-  max-width: 90%;
-  max-height: 90%;
-  overflow: auto;
+  width: 100%;
+  height: 75%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.fullscreen-image-container img {
-  max-width: 100%;
-  max-height: 100%;
+.fullscreen-image-container > div{
+  position: relative;
+  width: 40%;
+  height: 100%;
+}
+
+.fullscreen-image-container > div img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.fullscreen-image-container > div .button {
+  position: absolute;
+  top:-70px;
+  right: -70px;
+  width: 4em;
+  height: 4em;
+  border: none;
+  background: rgba(180, 83, 107, 0.11);
+  border-radius: 5px;
+  transition: background 0.5s;
+  z-index: 999;
+}
+
+.X {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2em;
+  height: 1.5px;
+  background-color: rgb(255, 255, 255);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.Y {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2em;
+  height: 1.5px;
+  background-color: #fff;
+  transform: translateX(-50%) rotate(-45deg);
+}
+
+.fullscreen-image-container .button:hover {
+  background-color: rgb(211, 21, 21);
+}
+
+.fullscreen-image-container .button:active {
+  background-color: rgb(130, 0, 0);
+}
+
+.fullscreen-image-container .button:hover > .close {
+  animation: close 0.2s forwards 0.25s;
+}
+
+@keyframes close {
+  100% {
+    opacity: 1;
+  }
 }
 
 
@@ -257,6 +314,12 @@ justify-content: space-evenly;
 @media (max-width: 1300px) {
   .valores-content .valores-parte2 .slider{
     width: 80%;
+  }
+  .valores-parte2{
+  justify-content: space-evenly;
+  }
+  .conjunto-valores{
+    width: 100%;
   }
   
   .valores-content .valores-parte2 .slider img, video{
@@ -272,6 +335,9 @@ justify-content: space-evenly;
   article {
     margin-left: 20px !important;
     margin-right: 20px !important;
+  }
+  .image{
+    margin:0 !important;
   }
   h2, .rectangulo{
    margin-left: 50px;
@@ -289,7 +355,7 @@ justify-content: space-evenly;
     margin-top: 50px;
   }
   .hazaña img {
-    height: 250px;
+    height: 65vw;
   }
   .hazaña h5{
     font-size: 1.2em;
@@ -306,6 +372,10 @@ justify-content: space-evenly;
   }
   .hazaña{
     width: 100%;
+    padding: 0;
+  }
+  .hazaña .content{
+    padding: 0 20px 0 ;
   }
   h2{
     font-size: calc(2em + 4vw);
@@ -335,5 +405,3 @@ justify-content: space-evenly;
     font-size: calc(0.5em + 1vw);
   }
 }
-
-  
