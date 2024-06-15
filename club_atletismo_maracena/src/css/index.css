@@ -55,6 +55,7 @@ body{
   font-size: calc(1em + 4vw);
   text-transform: uppercase;
   font-weight: 700;
+  text-align: center;
 }
 
 .main-title p{
@@ -64,6 +65,7 @@ body{
   font-size: calc(0em + 1.2vw);
   text-transform: uppercase;
   font-weight: 700;
+  text-align: center;
 }
 
 .main-title {
@@ -101,8 +103,17 @@ body{
   border-right: 8px solid #008000;
 }
 
+.message.hide {
+  animation: fadeOut 0.5s forwards;
+}
+
 .cky-btn-revisit-wrapper {
   background: #4062f7 !important;
+}
+.link{
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 @keyframes slideIn {
@@ -111,6 +122,17 @@ body{
   }
   to {
     left: 0; 
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(-50%);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-50%) translateY(-20px);
   }
 }
 

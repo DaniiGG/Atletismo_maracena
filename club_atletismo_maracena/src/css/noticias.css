@@ -78,9 +78,7 @@
   object-fit:cover;
 }
 
-.detalles-noticia .carousel{
-  width: 50%;
-}
+
 
 .news-link{
   color:rgb(21, 51, 134);
@@ -191,7 +189,7 @@
       margin-bottom: 100px;
     }
     .filtros{
-      top:120px;
+      top:95px;
       left: 0;
     }
   }

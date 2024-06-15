@@ -63,7 +63,14 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ element }: PrivateRouteProp
   }, []);
 
   if (userRole === "") {
-    return <div>Cargando...</div>;
+    return <div className="preloader">
+    <div className="loading-wave">
+      <div className="loading-bar"></div>
+      <div className="loading-bar"></div>
+      <div className="loading-bar"></div>
+      <div className="loading-bar"></div>
+    </div>
+  </div>;
   } else if (userRole === 'admin') {
     return element;
   } else if (userRole === 'login') {

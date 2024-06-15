@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { firestore, storage } from './firebase.ts';
-import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc  } from 'firebase/firestore';
+import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc, orderBy, query  } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { Link } from "react-router-dom";
+import { getAuth, signOut as firebaseSignOut } from "firebase/auth";
 import * as XLSX from 'xlsx';
 import './css/administracion.css';
 
@@ -30,6 +31,7 @@ type Inscripcion= {
     email: string;
     telefono: string;
     direccion: string;
+    dni: string;
   }
 
 type Seccion = "seccion1" | "seccion2" | "seccion3"; 
@@ -48,16 +50,43 @@ function Administracion() {
       });
     const [noticiaEditando, setNoticiaEditando] = useState<Noticia | null>(null);
     const [imagenes, setImagenes] = useState<Imagen[]>([]);
-    const [nuevaImagen, setNuevaImagen] = useState<File | null>(null);
+    const [nuevaImagen, setNuevaImagen] = useState<{file: File | null, fecha: string}>({file: null, fecha: ''});
     const [mostrarFormularioNoticia, setMostrarFormularioNoticia] = useState(false);
     const [mostrarFormularioGaleria, setMostrarFormularioGaleria] = useState(false);
+    const [message, setMessage] = useState('');
+    const [error, setError] = useState(false); 
+
+    setTimeout(() => {
+        const messageElement = document.querySelector('.message');
+        if (messageElement) {
+          setTimeout(() => {
+            messageElement.classList.add('hide');
+          }, 5000);
+        }
+      }, 5000); 
 
       const exportarAExcel = () => {
         const workbook = XLSX.utils.book_new();
-        const inscripcionesWS = XLSX.utils.json_to_sheet(inscripciones);
+        
+        const headers = [
+            { header: "Id", key: "id" },
+            { header: "Nombre", key: "nombre" },
+            { header: "Apellidos", key: "apellidos" },
+            { header: "Email", key: "email" },
+            { header: "Dni", key: "dni" },
+            { header: "Teléfono", key: "telefono" },
+            { header: "Dirección", key: "direccion" }
+        ];
+        const inscripcionesWS = XLSX.utils.json_to_sheet(inscripciones, { header: headers.map(h => h.key) });
+        
+        headers.forEach((h, i) => {
+            const cellAddress = XLSX.utils.encode_col(i) + "1";
+            inscripcionesWS[cellAddress].v = h.header;
+        });
+        
         XLSX.utils.book_append_sheet(workbook, inscripcionesWS, 'Inscripciones');
         XLSX.writeFile(workbook, 'inscripciones.xlsx');
-      };
+        };
 
       const cargarInscripciones = async () => {
         try {
@@ -80,7 +109,11 @@ function Administracion() {
 
     const cargarNoticias = async () => {
         try {
-            const querySnapshot = await getDocs(collection(firestore, 'hazañas'));
+            const noticiasQuery = query(
+                collection(firestore, 'hazañas'),
+                orderBy('fecha', 'desc') 
+            );
+            const querySnapshot = await getDocs(noticiasQuery);
             const noticiasData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Noticia));
             setNoticias(noticiasData);
         } catch (error) {
@@ -90,7 +123,11 @@ function Administracion() {
 
     const cargarImagenes = async () => {
         try {
-            const querySnapshot = await getDocs(collection(firestore, 'imagenes'));
+            const imagenesQuery = query(
+                collection(firestore, 'imagenes'),
+                orderBy('fecha', 'desc')
+            );
+            const querySnapshot = await getDocs(imagenesQuery);
             const imagenesData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Imagen));
             setImagenes(imagenesData);
         } catch (error) {
@@ -174,7 +211,9 @@ function Administracion() {
         fecha: new Date(nuevaNoticia.fecha),
         };
         await addDoc(collection(firestore, 'hazañas'), noticia);
-        console.log('Noticia insertada correctamente');
+        setMessage('Noticia insertada correctamente.');
+        setError(false);
+        console.log('Noticia insertada correctamente.');
         setNuevaNoticia({
         imagenes: [],
         titulo: '',
@@ -183,8 +222,12 @@ function Administracion() {
         fecha: '',
         destacada: false,
         });
+        cargarNoticias();
+        setMostrarFormularioNoticia(!mostrarFormularioNoticia);
     } catch (error) {
         console.error('Error al insertar la noticia:', error);
+        setMessage('No se ha podido insertar la noticia.');
+        setError(false);
     }
     };
     const handleEditarNoticia = (noticia: Noticia) => {
@@ -213,30 +256,49 @@ function Administracion() {
         }
     };
 
+    const handleDateChangeImagen = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setNuevaImagen(prevState => ({ ...prevState, fecha: e.target.value }));
+    };
+
     const handleImageChangeImagen = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files.length > 0) {
-            setNuevaImagen(e.target.files[0]);
+        const files = e.target.files;
+        if (files && files.length > 0) {
+            setNuevaImagen(prevState => ({ ...prevState, file: files[0] }));
+        } else {
+            setNuevaImagen(prevState => ({ ...prevState, file: null }));
         }
     };
 
     const handleSubmitImagen = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (nuevaImagen) {
+        if (nuevaImagen.file) {
             try {
-                const storageRef = ref(storage, `imagenes/${nuevaImagen.name}`);
-                await uploadBytes(storageRef, nuevaImagen);
+                const storageRef = ref(storage, `imagenes/${nuevaImagen.file.name}`);
+                await uploadBytes(storageRef, nuevaImagen.file);
                 console.log('Imagen subida correctamente');
-                const imagen = await getDownloadURL(storageRef);
-                await addDoc(collection(firestore, 'imagenes'), { imagen });
-                console.log('URL de la imagen guardada en Firestore');
-                setNuevaImagen(null);
+                const imagenURL = await getDownloadURL(storageRef);
+                const fecha = nuevaImagen.fecha ? new Date(nuevaImagen.fecha) : new Date();
+                await addDoc(collection(firestore, 'imagenes'), { imagen: imagenURL, fecha });
+                setMessage('Imagen guardada correctamente.');
+                setError(false);
+                console.log('URL de la imagen y fecha guardadas en Firestore');
+                setNuevaImagen({file: null, fecha: ''});
                 cargarImagenes();
+                setMostrarFormularioGaleria(!mostrarFormularioGaleria);
             } catch (error) {
                 console.error('Error al subir la imagen:', error);
+                setMessage('Error al subir la imagen.');
+                setError(true);
             }
         }
     };
-    
+    function alternarSignOut() {
+        const auth = getAuth();
+        firebaseSignOut(auth).then(() => {
+        }).catch((error) => {
+          console.error('Error:', error);
+        });
+      }
 
     return (
         <>
@@ -246,6 +308,7 @@ function Administracion() {
                         <Link to="/">CLUB ATLETISMO <br/><b>MARACENA</b></Link>
                 </div>
                 <h1>Panel de administración</h1>
+                <a className="link" onClick={alternarSignOut}>Cerrar sesión</a>
             </div>
             <div className='administracion'>
             <div className="sidebar">
@@ -258,12 +321,13 @@ function Administracion() {
                     <li onClick={() => toggleSeccion("seccion3")}>Galería</li>
                 </ul>
             </div>
+            {message && <div className={`message ${error ? 'error' : 'success'}`}>{message}</div>}
             <div className='secciones'>
                 
                 <div className={seccionAbierta === "seccion1" ? 'submenu-visible' : 'submenu-hidden'}>
                     
                     <div className='header-administracion'>
-                        <h1>{noticiaEditando ? 'Edita la noticia' : mostrarFormularioNoticia ? 'Inserta una noticia' : 'Control de noticias'}</h1>
+                        <h1>{noticiaEditando ? 'Edita la noticia' : mostrarFormularioNoticia ? 'Nueva noticia' : 'Control de noticias'}</h1>
                         
                         <button onClick={() => {
                         if (noticiaEditando) {
@@ -272,7 +336,7 @@ function Administracion() {
                             setMostrarFormularioNoticia(!mostrarFormularioNoticia);
                         }
                         }}>
-                        { noticiaEditando || mostrarFormularioNoticia ? (<><i className="fa-solid fa-left-long"></i>&nbsp;&nbsp;&nbsp;{'Volver a la lista'} </> ): (<>{'Insertar noticia'}&nbsp;&nbsp;&nbsp; <i className="fa-solid fa-plus"></i></>)}
+                        { noticiaEditando || mostrarFormularioNoticia ? (<><i className="fa-solid fa-left-long"></i>&nbsp;&nbsp;&nbsp;{'Volver a la lista'} </> ): (<>{'Nueva noticia'}&nbsp;&nbsp;&nbsp; <i className="fa-solid fa-plus"></i></>)}
                         </button>
                     </div>
                     {!mostrarFormularioNoticia && !noticiaEditando &&(
@@ -290,26 +354,28 @@ function Administracion() {
                                 <p><strong>Etiqueta:</strong> {noticia.etiqueta}</p>
                                 <p><strong>Fecha:</strong> {new Date(noticia.fecha.seconds * 1000).toLocaleDateString()}</p>
                                 <p><strong>Destacada:</strong> {noticia.destacada ? 'Sí' : 'No'}</p>
-                                <button className="edit-button" type="button" onClick={() => handleEditarNoticia(noticia)}>
+                                <div className='acciones'>
+                                    <button className="edit-button" type="button" onClick={() => handleEditarNoticia(noticia)}>
 
-                                <span className="button__text">Editar</span>
-                                <span className="button__icon">
-                                <svg className="svg-icon" fill="none" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><g stroke="#fff" strokeLinecap="round" strokeWidth="2"><path d="m20 20h-16"></path><path clipRule="evenodd" d="m14.5858 4.41422c.781-.78105 2.0474-.78105 2.8284 0 .7811.78105.7811 2.04738 0 2.82843l-8.28322 8.28325-3.03046.202.20203-3.0304z" fillRule="evenodd"></path></g></svg>
-                                </span></button>
-                                <button className="del-button" type="button" onClick={() => handleEliminarNoticia(noticia.id, noticia.titulo)}>
-                                <span className="button__text">Eliminar</span>
-                                <span className="button__icon">
-                                    <svg className="svg" height="512" viewBox="0 0 512 512" width="512" xmlns="http://www.w3.org/2000/svg">
-                                    <title></title>
-                                    <path d="M112,112l20,320c.95,18.49,14.4,32,32,32H348c17.67,0,30.87-13.51,32-32l20-320" style={{fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px'}}></path>
-                                    <line className="stroke:#fff;stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px" x1="80" x2="432" y1="112" y2="112"></line>
-                                    <path d="M192,112V72h0a23.93,23.93,0,0,1,24-24h80a23.93,23.93,0,0,1,24,24h0v40" style={{fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px'}}></path>
-                                    <line style={{fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px'}} x1="256" x2="256" y1="176" y2="400"></line>
-                                    <line style={{fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px'}} x1="184" x2="192" y1="176" y2="400"></line>
-                                    <line style={{fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px'}} x1="328" x2="320" y1="176" y2="400"></line>
-                                    </svg>
-                                </span>
-                                </button>
+                                    <span className="button__text">Editar</span>
+                                    <span className="button__icon">
+                                    <svg className="svg-icon" fill="none" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><g stroke="#fff" strokeLinecap="round" strokeWidth="2"><path d="m20 20h-16"></path><path clipRule="evenodd" d="m14.5858 4.41422c.781-.78105 2.0474-.78105 2.8284 0 .7811.78105.7811 2.04738 0 2.82843l-8.28322 8.28325-3.03046.202.20203-3.0304z" fillRule="evenodd"></path></g></svg>
+                                    </span></button>
+                                    <button className="del-button" type="button" onClick={() => handleEliminarNoticia(noticia.id, noticia.titulo)}>
+                                    <span className="button__text">Eliminar</span>
+                                    <span className="button__icon">
+                                        <svg className="svg" height="512" viewBox="0 0 512 512" width="512" xmlns="http://www.w3.org/2000/svg">
+                                        <title></title>
+                                        <path d="M112,112l20,320c.95,18.49,14.4,32,32,32H348c17.67,0,30.87-13.51,32-32l20-320" style={{fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px'}}></path>
+                                        <line className="stroke:#fff;stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px" x1="80" x2="432" y1="112" y2="112"></line>
+                                        <path d="M192,112V72h0a23.93,23.93,0,0,1,24-24h80a23.93,23.93,0,0,1,24,24h0v40" style={{fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px'}}></path>
+                                        <line style={{fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px'}} x1="256" x2="256" y1="176" y2="400"></line>
+                                        <line style={{fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px'}} x1="184" x2="192" y1="176" y2="400"></line>
+                                        <line style={{fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px'}} x1="328" x2="320" y1="176" y2="400"></line>
+                                        </svg>
+                                    </span>
+                                    </button>
+                                </div>
                             </div>
                         ))}
                     </div>
@@ -437,9 +503,11 @@ function Administracion() {
                 <table>
                     <thead>
                         <tr>
+                        <th>Id</th>
                         <th>Nombre</th>
                         <th>Apellidos</th>
                         <th>Email</th>
+                        <th>Dni</th>
                         <th>Teléfono</th>
                         <th>Dirección</th>
                         </tr>
@@ -447,9 +515,11 @@ function Administracion() {
                     <tbody>
                         {inscripciones.map(inscripcion => (
                         <tr key={inscripcion.id}>
+                            <td>{inscripcion.id}</td>
                             <td>{inscripcion.nombre}</td>
                             <td>{inscripcion.apellidos}</td>
                             <td>{inscripcion.email}</td>
+                            <td>{inscripcion.dni}</td>
                             <td>{inscripcion.telefono}</td>
                             <td>{inscripcion.direccion}</td>
                         </tr>
@@ -457,7 +527,7 @@ function Administracion() {
                     </tbody>
                     <tfoot>
                         <tr className="total-row">
-                        <td colSpan={5}>Total de inscripciones: {inscripciones.length}</td>
+                        <td colSpan={7}>Total de inscripciones: {inscripciones.length}</td>
                         </tr>
                     </tfoot>
                 </table>
@@ -469,12 +539,12 @@ function Administracion() {
 
                 <div className={seccionAbierta === "seccion3" ? 'submenu-visible' : 'submenu-hidden'}>
                     <div className='header-administracion'>
-                        <h1>{mostrarFormularioGaleria ? 'Inserta una imagen' : 'Control de galería'}</h1>
+                        <h1>{mostrarFormularioGaleria ? 'Nueva imagen' : 'Control de galería'}</h1>
                         <button onClick={() => {
                             setMostrarFormularioGaleria(!mostrarFormularioGaleria);
                         }
                         }>
-                        { mostrarFormularioGaleria ? (<><i className="fa-solid fa-left-long"></i>&nbsp;&nbsp;&nbsp;{'Volver a la lista'} </> ): (<>{'Insertar Imagen'}&nbsp;&nbsp;&nbsp; <i className="fa-solid fa-plus"></i></>)}
+                        { mostrarFormularioGaleria ? (<><i className="fa-solid fa-left-long"></i>&nbsp;&nbsp;&nbsp;{'Volver a la lista'} </> ): (<>{'Nueva imagen'}&nbsp;&nbsp;&nbsp; <i className="fa-solid fa-plus"></i></>)}
                         </button>
                     </div>
                         {!mostrarFormularioGaleria &&(
@@ -503,9 +573,10 @@ function Administracion() {
                         {mostrarFormularioGaleria && (
                         <div className="noticia-formulario">
                             <form onSubmit={handleSubmitImagen}>
-                                <input type="date" name="fecha" id="fecha" placeholder="fecha" required/>
+                                <input type="date" name="fecha" id="fecha" placeholder="fecha"
+                                 value={nuevaImagen.fecha} onChange={handleDateChangeImagen} required/>
                                 <input type="file" accept="image/*" onChange={handleImageChangeImagen} required className="input-imagen" />
-                                <button type="submit" className="boton-insertar">Insertar Imagen</button>
+                                <button type="submit" className="boton-insertar">Subir Imagen</button>
                             </form>
                         </div>
                         )}

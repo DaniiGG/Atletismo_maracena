@@ -1,0 +1,191 @@
+.entrenadores{
+    display: flex;
+    flex-flow: wrap;
+    gap: 31px;
+}
+.entrenador{
+    width: 30%;
+}
+.entrenador-img-wrapper {
+    position: relative;
+}
+
+.entrenador-img {
+    display: block;
+    width: 100%;
+}
+
+.entrenador-img-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.8));
+    pointer-events: none; 
+}
+.entrenador-name {
+    position: absolute;
+    bottom: 10px;
+    left: 10px; 
+    color: white;
+    font-size: calc(0.5em + 1vw);
+    margin: 0;
+    padding: 0;
+    z-index: 100;
+    font-style:italic ;
+    font-weight: bolder;
+    text-transform:uppercase;
+}
+
+.pista-section{
+  position: relative;
+  background-color: #1f1f1f;
+  color: white;
+  padding-top: 10px;
+  margin-top: 50px;
+}
+.pista-section:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, rgb(64, 98, 247) 1%, #ffffff 40%, rgb(64, 98, 247) 100%);
+  transform: skewY(-1deg);
+  z-index: -1;
+}
+
+.pista{
+  display: flex;
+  flex-flow: wrap;
+  justify-content: space-between;
+  column-gap: 30px;
+  padding-bottom: 40px;
+}
+.pista-contenido{
+  width: 40%;
+  min-width: 30%;
+  max-height: 25vw; /* Adjust this height as needed */
+    overflow-y: auto;
+}
+
+.pista .slider{
+  width:40vw;
+}
+
+.pista .carousel-item img{
+  width: 100%;
+  height: 25vw;
+}
+
+.horario {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 18px;
+    text-align: left;
+  }
+  
+  .horario thead tr {
+    background-color: #009879;
+    text-align: center;
+    font-weight: bold;
+  }
+  
+  .horario th, .horario td {
+    padding: 12px 15px;
+    border: 1px solid #dddddd;
+  }
+  
+  .horario tbody tr {
+    border-bottom: 1px solid #dddddd;
+  }
+  
+  .horario tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+  }
+  
+  .horario tbody tr:last-of-type {
+    border-bottom: 2px solid #009879;
+  }
+  
+  .horario tbody tr:hover {
+    background-color: #f1f1f1;
+  }
+
+  @media (max-width: 1050px) {
+    .entrenadores{
+      margin: 0 50px;
+  }
+  .pista{
+    justify-content: space-evenly;
+  }
+
+  }
+  
+  @media (max-width: 600px) {
+    .horario thead {
+      display: none;
+    }
+  
+    .horario, .horario tbody, .horario tr, .horario td {
+      display: block;
+      width: 100%;
+    }
+  
+    .horario tr {
+      margin-bottom: 15px;
+    }
+  
+    .horario td {
+      text-align: right;
+      padding-left: 50%;
+      position: relative;
+    }
+  
+    .horario td::before {
+      content: attr(data-label);
+      position: absolute;
+      left: 0;
+      width: 50%;
+      padding-left: 15px;
+      font-weight: bold;
+      text-align: left;
+    }
+  }
+  
+  @media (max-width: 768px) {
+
+    .entrenadores{
+      margin: 0 !important;
+  }
+    .entrenador{
+      width: 100%;
+  }
+  .entrenador-name{
+    font-size: 1.7em;
+  }
+  .pista{
+    flex-direction:column ;
+  }
+
+  .pista-contenido{
+    width: 100%;
+    overflow-y: unset;
+    max-height: unset;
+  }
+  
+  .pista .slider{
+    width:100%;
+  }
+
+  .pista .carousel-item img{
+    height: 50vw;
+  }
+  }
+
+
+

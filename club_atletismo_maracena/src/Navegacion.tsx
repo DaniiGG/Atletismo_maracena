@@ -80,6 +80,10 @@ function Navegacion() {
       verificarAdmin();
   }, [user]);
 
+    const handleMenuClose = () => {
+      setMenuOpen(false);
+  };
+
     return (
         <> 
         <div className='menu-hamburguesa'>
@@ -102,25 +106,25 @@ function Navegacion() {
                     <Link to="/">CLUB ATLETISMO <br/><b>MARACENA</b></Link>
             </div>
             <ul>
-              <li className={location.pathname === "/club" ? "active" : ""}><Link to="/club">Club</Link></li>
-              <li  className={"has-submenu " + (location.pathname === "/inscripcion" ? "active" : "")}>
+              <li className={location.pathname === "/club" ? "active" : ""} onClick={handleMenuClose}><Link to="/club">Club</Link></li>
+              <li  className={"has-submenu " + (location.pathname === "/inscripcion" ? "active" : "")} onClick={handleMenuClose}>
                 <Link to="/inscripcion">Inscríbete</Link>
               </li>
-              <li className={"has-submenu " + (location.pathname === "/noticias" ? "active" : "")}>
+              <li className={"has-submenu " + (location.pathname === "/noticias" ? "active" : "")} onClick={handleMenuClose}>
                 <Link to="/noticias">Noticias</Link>
               </li>
-              <li className={location.pathname === "/galeria" ? "active" : ""}><Link to="/galeria">Galería de fotos</Link></li>
-              <li className={location.pathname === "/contacto" ? "active" : ""}><Link to="/contacto">Contacto</Link></li>
+              <li className={location.pathname === "/galeria" ? "active" : ""} onClick={handleMenuClose}><Link to="/galeria">Galería de fotos</Link></li>
+              <li className={location.pathname === "/contacto" ? "active" : ""} onClick={handleMenuClose}><Link to="/contacto">Contacto</Link></li>
               <li className="has-submenu "> {user ? (
                 <>
-                  <a>Bienvenido, {user.displayName ? user.displayName : user.email}</a>
+                  <a>Bienvenido, {user.displayName ? user.displayName : user.email} &nbsp; &#9660;</a>
                   <ul className="submenu">
                     {esAdmin && <li><Link to="/administracion">Administración</Link></li>}
-                    <li><a className="link" onClick={alternarSignOut}>Cerrar sesión</a></li>
+                    <li><a className="link" onClick={() => {alternarSignOut();handleMenuClose();}}>Cerrar sesión</a></li>
                   </ul>
                 </>
                 ) : (
-                  <Link to="/login"  className="link">Login</Link>
+                  <Link to="/login"  className="link" onClick={handleMenuClose}>Login</Link>
                 )}
               </li>
             </ul>

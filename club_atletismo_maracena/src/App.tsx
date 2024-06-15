@@ -74,7 +74,8 @@ function App() {
             <div className="carousel-item">
               <img src="../img/imagen-slider2.jpg" height="" width="" className="d-block w-100" loading="lazy" alt="Fin de carrera" />
               <div className="carousel-caption d-md-block animate__animated animate__fadeIn">
-              <h5 className="animate__animated animate__fadeInDown">Second slide label</h5>
+              <h5 className="animate__animated animate__fadeInDown">Entrena duro</h5>
+              <p className="animate__animated animate__fadeInDown">Y mejora tu marca</p>
               </div>
             </div>
             <div className="carousel-item">
@@ -152,13 +153,13 @@ function App() {
                   <img src="../img/trabajo_en_equipo.png" height="" width="" className="d-block w-100" alt="Trabajo en equipo"/>
                 </div>
                 <div className="carousel-item">
-                  <img src="../img/trabajo_en_equipo.png" height="" width="" className="d-block w-100" alt="..."/>
+                  <img src="../img/slidervalores2.jpg" height="" width="" className="d-block w-100" alt="..."/>
                 </div>
                 {/* <div className="carousel-item">
                 <video src="../img/prueba.mp4" className="d-block w-100" autoPlay loop></video>
                 </div> */}
                 <div className="carousel-item">
-                  <img src="../img/pistaAtletismo.jpeg" height="" width="" className="d-block w-100" alt="..."/>
+                  <img src="../img/slidervalores3.jpg" height="" width="" className="d-block w-100" alt="..."/>
                 </div>
               </div>
               <button className="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">

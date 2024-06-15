@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import { firestore } from './firebase'; 
 import './css/galeria.css';
 
 interface ImageData {
   imagen: string;
   descripcion: string;
+  fecha: { seconds: number; nanoseconds: number };
 }
 
 function Galeria() {
@@ -38,21 +39,23 @@ function Galeria() {
   useEffect(() => {
     const fetchImages = async () => {
       try {
-        const querySnapshot = await getDocs(collection(firestore, 'imagenes'));
+        // Crear una consulta ordenada por el campo 'fecha'
+        const q = query(collection(firestore, 'imagenes'), orderBy('fecha', 'desc')); // Cambia 'desc' a 'asc' para orden ascendente
+        const querySnapshot = await getDocs(q);
         const loadedImages: ImageData[] = [];
-
+  
         querySnapshot.forEach(doc => {
           const data = doc.data() as ImageData;
           loadedImages.push(data);
         });
-
+  
         setImages(loadedImages); 
         setLoading(false);
       } catch (error) {
         console.error('Error fetching images: ', error);
       }
     };
-
+  
     fetchImages();
   }, []); 
 

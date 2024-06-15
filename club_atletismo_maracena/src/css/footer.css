@@ -40,6 +40,9 @@ ul{
 .main-footer ul > li{
   margin-top: 20px;
 }
+.main-footer ul{
+  padding-left:0;
+}
 
 .main-footer ul > li > ul >li{
   margin-top: 0;
@@ -64,13 +67,13 @@ footer > div{
 
 .patrocinadores{
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   margin-top: 0;
 }
 .patrocinadores img{
-  max-width: 10vw;
+  max-width: 18vw;
+  max-height: 7vw;
 }
-
 .subfooter{
   display: flex;
   flex-direction: row;
@@ -129,7 +132,8 @@ footer a:visited{
   
 
   .patrocinadores img{
-    max-width: 20vw;
+    max-width: 30vw;
+    max-height: 12vw;
   }
   
   .subfooter-parte1{

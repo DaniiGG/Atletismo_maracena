@@ -82,6 +82,13 @@ const Contacto: React.FC = () => {
           </div>
         </article>
       </section>
+      <section className='section'>
+          <article className='article'>
+            <div className='rectangulo'></div>
+            <h2 id="valores-title">Estamos aquí &nbsp; <i className="fa-solid fa-location-dot fa-xs"></i></h2>
+            <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d749.795417866446!2d-3.6282635308206475!3d37.21157545137386!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses!2ses!4v1715933897035!5m2!1ses!2ses" width="100%" height="400" style={{ border: 0 }} loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
+          </article>
+      </section>
     </>
   );
 }

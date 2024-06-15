@@ -43,11 +43,11 @@
   }
 
   .fullscreen-image-container > div .prev-button {
-    left: -100px;
+    left: -80px;
     transition: all 0.3s ease;
   }
   .fullscreen-image-container > div .next-button {
-    right: -100px;
+    right: -20px;
     transition: all 0.3s ease;
   }
   .fullscreen-image-container > div .next-button:hover, .prev-button:hover {
@@ -56,19 +56,34 @@
 
 
  .triangle1 {
-  --b:10px; 
-  aspect-ratio: cos(30deg);
-  clip-path: polygon(100% 50%,0 100%,0 0,100% 50%,calc(100% - var(--b)) 50%,calc(var(--b)/2) calc(var(--b)*cos(30deg)), calc(var(--b)/2) calc(100% - var(--b)*cos(30deg)),calc(100% - var(--b)) 50%);
-  background: linear-gradient(45deg, #ffffff 0%, #ffffff 20%, #2d3db8 60%, #2d3db8 100%);
+  --b: 10px; /* Puedes ajustar este valor para cambiar el tamaño del borde de la flecha */
+  
+  width: 100px; /* Ajusta el ancho según tus necesidades */
+  height: 100px; /* Ajusta la altura según tus necesidades */
+  clip-path: polygon(
+    100% 25%,   /* Punto central derecho (punta de la flecha) */
+    75% 0,      /* Esquina superior derecha del triángulo */
+    50% 0,      /* Esquina superior izquierda */
+    75% 25%,    /* Centro izquierdo */
+    50% 50%,    /* Esquina inferior izquierda */
+    75% 50%     /* Esquina inferior derecha del triángulo */
+  );
+  background: white;
 }
-
 .triangle2 {
-  --b:10px; 
-
-  aspect-ratio: cos(30deg);
-  clip-path: polygon(0 50%,100% 100%,100% 0,0 50%,var(--b) 50%,calc(100% - var(--b)/2) calc(var(--b)*cos(30deg)), calc(100% - var(--b)/2) calc(100% - var(--b)*cos(30deg)),var(--b) 50%);
-  background: linear-gradient(45deg, #2d3db8 0%, #2d3db8 40%, #ffffff 80%, #ffffff 100%);
-
+  --b: 10px; /* Puedes ajustar este valor para cambiar el tamaño del borde de la flecha */
+  
+  width: 100px; /* Ajusta el ancho según tus necesidades */
+  height: 100px; /* Ajusta la altura según tus necesidades */
+  clip-path: polygon(
+    0 25%,        /* Punto central izquierdo (punta de la flecha) */
+    25% 0,        /* Esquina superior del triángulo */
+    50% 0,       /* Esquina superior derecha */
+    25% 25%,      /* Centro derecho */
+    50% 50%,    /* Esquina inferior derecha */
+    25% 50%      /* Esquina inferior del triángulo */
+  );
+  background: white;
 }
 
   @media (max-width: 1050px) {

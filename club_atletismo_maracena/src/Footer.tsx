@@ -7,9 +7,10 @@ function Footer() {
         <footer>
             <div className='main-footer'>
                 <div>
+                <h6>Patrocinadores</h6>
                     <div className='patrocinadores'>
-                        <h6>Patrocinadores</h6>
-                        <img src="../img/alssport-removebg-preview.png"></img>
+                        <img src="../img/alssport-removebg-preview.png"></img>&nbsp;&nbsp;&nbsp;
+                        <img src="../img/run_pro.png"></img>&nbsp;&nbsp;&nbsp;
                         <img src="../img/grupomayfo-removebg-preview.png"></img>
                     </div>
                 </div>
@@ -18,13 +19,13 @@ function Footer() {
                     <ul>
                         <li>Telefono
                             <ul>
-                                <li>+34 654 66 75 45</li>
-                                <li>+34 675 34 24 76</li>
+                                <li><a href="tel:+34645343423">645 34 34 23</a></li>
+                                <li><a href="tel:+34672346521">672 34 65 21</a></li>
                             </ul>
                         </li>
                         <li>Email
                             <ul>
-                                <li>ejemplo@gmail.com</li>
+                                <li><a href="mailto:atletismomaracena@gmail.com">atletismomaracena@gmail.com</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -44,7 +45,7 @@ function Footer() {
                     </div>
                 </div>
                 <div>
-                    <p><Link to="">Aviso legal</Link>&nbsp;|&nbsp;<Link to="/politica-cookies">Política de cookies</Link>&nbsp;|&nbsp;<Link to="/politica-privacidad">Política de privacidad</Link></p>
+                    <p><Link to="/politica-cookies">Política de cookies</Link>&nbsp;|&nbsp;<Link to="/politica-privacidad">Política de privacidad</Link></p>
                 </div>
                 <div className="redes">
                     <a target="_blank" href="https://www.facebook.com/clubatletismomaracena/?locale=es_ES"><i className="fa-brands fa-square-facebook fa-2xl"></i></a>&nbsp;&nbsp;&nbsp;

@@ -345,6 +345,10 @@ justify-content: space-between;
   .carousel-item img{
     height: 50vh;
   }
+  .valores-content{
+    margin-left: 50px;
+    margin-right: 50px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -379,6 +383,10 @@ justify-content: space-between;
   }
   h2{
     font-size: calc(2em + 4vw);
+  }
+  .valores-content{
+    margin-left: 0 !important;
+    margin-right: 0 !important;
   }
   .valores-content .valores-parte2 .slider{
     width: 100%;

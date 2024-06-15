@@ -3,6 +3,7 @@ import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 import { useState, useEffect } from 'react';
 import { auth } from './firebase.ts';
 import { onAuthStateChanged, User } from 'firebase/auth';
+import emailjs from 'emailjs-com'
 import './css/inscripciones.css';
 
 declare global {
@@ -12,7 +13,6 @@ declare global {
 }
 
 function Inscripciones() {
-  
   const [loaded, setLoaded] = useState(false);
   const [formData, setFormData] = useState({
     nombre: '',
@@ -27,11 +27,13 @@ function Inscripciones() {
     dni: '',
   });
   const [message, setMessage] = useState('');
-  const [error, setError] = useState(false); 
+  const [error, setError] = useState(false);
+  const [showFullInfo, setShowFullInfo] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+    validateField(name as FormFieldName, value); // Validate field on input change
   };
 
   const handleBlur = (name: FormFieldName, value: string) => {
@@ -41,51 +43,70 @@ function Inscripciones() {
   const validateField = (name: string, value: string) => {
     switch (name) {
       case 'telefono':
-        const phonePattern = /^\d{9}$/; 
-        setErrors({ ...errors, telefono: phonePattern.test(value) ? '' : 'El número de teléfono debe tener exactamente 9 dígitos.' });
+        const phonePattern = /^\d{9}$/;
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          telefono: phonePattern.test(value) ? '' : 'El número de teléfono debe tener exactamente 9 dígitos.',
+        }));
         break;
       case 'dni':
         const dniPattern = /^[0-9]{8}[TRWAGMYFPDXBNJZSQVHLCKET]$/;
-        setErrors({ ...errors, dni: dniPattern.test(value.toUpperCase()) ? '' : 'Formato de DNI incorrecto.' });
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          dni: dniPattern.test(value.toUpperCase()) ? '' : 'Formato de DNI incorrecto.',
+        }));
         break;
       default:
         break;
     }
   };
 
-  type FormFieldName = keyof typeof formData;
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    Object.entries(formData).forEach(([name, value]) => validateField(name as FormFieldName, value));
-
-    if (Object.values(errors).some((error) => error !== '')) {
-      return;
-    }
-    try {
-      const querySnapshot = await getDocs(query(collection(firestore, 'inscripciones'), where('dni', '==', formData.dni)));
-      if (!querySnapshot.empty) {
-        setMessage('Este DNI ya está registrado.');
-        setError(true);
-        return;
-      }
-      
-      await addDoc(collection(firestore, 'inscripciones'), formData);
-      setMessage('¡Inscripción exitosa!');
-      setError(false);
-      setFormData({
-        nombre: '',
-        apellidos: '',
-        email: '',
-        telefono: '',
-        direccion: '',
-        dni: '',
-      });
-    } catch (error) {
-      console.error('Error al guardar los datos:', error);
-      setMessage('Hubo un error al procesar la inscripción. Por favor, inténtalo de nuevo más tarde.');
+  const validateForm = async () => {
+    let isValid = true;
+  
+    Object.entries(formData).forEach(([name, value]) => {
+      validateField(name as FormFieldName, value);
+    });
+  
+    if (
+      formData.telefono === '' ||
+      formData.dni === ''
+    ) {
+      isValid = false;
+      setMessage('Debe rellenar todos los campos correctamente.');
+      setError(true);
+    } else if (!/^\d{9}$/.test(formData.telefono)) {
+      isValid = false;
+      setMessage('El número de teléfono debe tener nueve dígitos.');
+      setError(true);
+    } else if (!/^\d{8}[A-Za-z]$/.test(formData.dni)) {
+      isValid = false;
+      setMessage('El DNI debe tener ocho números seguidos de una letra.');
       setError(true);
     }
+  
+    if (isValid) {
+      try {
+        const querySnapshot = await getDocs(
+          query(collection(firestore, 'inscripciones'), where('dni', '==', formData.dni))
+        );
+        if (!querySnapshot.empty) {
+          setMessage('Este DNI ya está registrado.');
+          setError(true);
+          isValid = false;
+        }
+      } catch (error) {
+        console.error('Error al validar el DNI:', error);
+        setMessage('Hubo un error al validar el DNI. Por favor, inténtalo de nuevo más tarde.');
+        setError(true);
+        isValid = false;
+      }
+    }
+  
+    return isValid;
   };
+
+  type FormFieldName = keyof typeof formData;
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user: User | null) => {
@@ -97,34 +118,82 @@ function Inscripciones() {
     return () => unsubscribe();
   }, []);
 
-  // useEffect(() => {
-  //   const script = document.createElement('script');
-  //   script.src = 'https://www.sandbox.paypal.com/sdk/js?client-id=AczANP1djFkjD3Yaf06dyqNxTmMmZxHiqfbCQI3hgvZ6DaK9h3qAqsurBtIVNFEEmKj34QEw8LQCPWOz&vault=true&intent=subscription';
-  //   script.async = true;
-  //   script.onload = () => {
-  //     window.paypal.Buttons({
-  //       style: {
-  //         shape: 'rect',
-  //         color: 'blue',
-  //         layout: 'vertical',
-  //         label: 'subscribe'
-  //       },
-  //       createSubscription: function(data: any, actions: any) {
-  //         return actions.subscription.create({
-  //           plan_id: 'P-00970427S3164312KMY6JQ4I'
-  //         });
-  //       },
-  //       onApprove: function(data: any, actions: any) {
-  //         alert(data.subscriptionID); // Puedes agregar un mensaje opcional de éxito para el suscriptor aquí
-  //       }
-  //     }).render('#paypal-button-container-P-00970427S3164312KMY6JQ4I'); // Renderiza el botón de PayPal
-  //   };
-  //   document.body.appendChild(script);
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://www.paypal.com/sdk/js?client-id=AczANP1djFkjD3Yaf06dyqNxTmMmZxHiqfbCQI3hgvZ6DaK9h3qAqsurBtIVNFEEmKj34QEw8LQCPWOz&vault=true&intent=subscription';
+    script.async = true;
+    script.onload = () => {
+      window.paypal.Buttons({
+        style: {
+          shape: 'rect',
+          color: 'blue',
+          layout: 'vertical',
+          label: 'subscribe'
+        },
+        createSubscription: async (data:any, actions:any) => {
+          console.log(data)
+          const isValid = await validateForm();
+          if (isValid) {
+            return actions.subscription.create({
+              plan_id: 'P-9DN75489F5168674XMZUDKIA' 
+            });
+          } else {
+            return Promise.reject(); 
+          }
+        },
+        onError: function(err:any) {
+          // Show a generic error message
+          console.log(err)
+          setError(true);
+        },
+        onApprove: async function(data:any, actions:any) {
+          console.log('Subscription created with ID: ' + data.subscriptionID, actions); 
+          try {
+            await addDoc(collection(firestore, 'inscripciones'), formData);
+            sendEmailReceipt(formData);
+            setMessage('¡Inscripción exitosa! Ya eres parte de nuestro club.');
+            setError(false);
+            setFormData({
+              nombre: '',
+              apellidos: '',
+              email: '',
+              telefono: '',
+              direccion: '',
+              dni: '',
+            });
+          } catch (error) {
+            console.error('Error al guardar los datos:', error);
+            setMessage('Hubo un error al procesar la inscripción. Por favor, inténtalo de nuevo más tarde.');
+            setError(true);
+          }
+        }
+      }).render('#paypal-button-container-P-9DN75489F5168674XMZUDKIA'); 
+    };
+    document.body.appendChild(script);
+  
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, [formData]);
 
-  //   return () => {
-  //     document.body.removeChild(script);
-  //   };
-  // }, []);
+  const sendEmailReceipt = (formData:any) => {
+    const templateParams = {
+      nombre: formData.nombre,
+      apellidos: formData.apellidos,
+      email: formData.email,
+      telefono: formData.telefono,
+      direccion: formData.direccion,
+      dni: formData.dni,
+    };
+
+    emailjs.send('service_22qek3l', 'template_r4lw7u5', templateParams, 'rVCM_9rNa1IUDuIM-')
+      .then((response) => {
+        console.log('Correo enviado exitosamente:', response.status, response.text);
+      }, (err) => {
+        console.error('Error al enviar el correo:', err);
+      });
+  };
+
 
   return (
     <> 
@@ -139,10 +208,8 @@ function Inscripciones() {
         <article className='article'>
           <div className='tarifas'>
             <div className='mensual'>
-
             </div>
             <div className='trimestral'>
-
             </div>
           </div>
         </article>
@@ -152,9 +219,41 @@ function Inscripciones() {
                 <h2>
                   Formulario de inscripción
                 </h2>
-          <div></div>
+                <div className='mensaje-formulario'>
+                  <h4>Opciones de Pago de Mensualidad</h4>
+                  En Club de Atletismo Maracena, queremos hacer que el proceso de pago de tu mensualidad sea lo más sencillo y conveniente posible. Por eso, ofrecemos dos opciones fáciles para que elijas la que mejor se adapte a tus necesidades.&nbsp;
+
+                  {showFullInfo ? (
+                    <>
+                      <h5>1. Pago en Línea</h5>
+                      Ahora puedes pagar tu mensualidad directamente desde nuestra página web. Este método es rápido, seguro y te permite realizar el pago desde la comodidad de tu hogar. Sigue estos simples pasos para completar tu pago en línea:
+                      <ul>
+                        <li>Rellena el siguiente formulario.</li>
+                        <li>Una vez rellenado haga click en "Paypal" o bien "Tarjeta de débito o crédito".</li>
+                        <li>Rellene el formulario correspondiente.</li>
+                        <li>Confirma el monto y haz clic en "Aceptar y continuar".</li>
+                        <li>¡Y listo! Recibirás una confirmación de tu pago inmediatamente.</li>
+                      </ul>
+
+                      <h5>2. Transferencia Bancaria</h5>
+                      Si prefieres realizar un depósito directo, también ofrecemos la opción de pagar a través de transferencia bancaria. Simplemente sigue estos pasos:
+
+                      Visita tu banco o utiliza tu servicio de banca en línea.
+                      Realiza una transferencia al siguiente número de cuenta bancaria:
+                      <ul>
+                        <li>Banco: [Nombre del Banco]</li>
+                        <li>Cuenta: [Número de Cuenta]</li>
+                        <li>Nombre del Titular: [Nombre del Titular]</li>
+                      </ul>
+                      En la referencia o concepto del pago, por favor incluye tu número de cliente o número de factura para que podamos identificar tu pago correctamente.&nbsp;
+                      <a onClick={() => setShowFullInfo(false)}>Ver menos</a>
+                    </>
+                  ) : (
+                    <a onClick={() => setShowFullInfo(true)}>Más información</a>
+                  )}
+                </div>
             {message && <div className={`message ${error ? 'error' : 'success'}`}>{message}</div>}
-            <form className="inscripciones-form" onSubmit={handleSubmit}>
+            <form className="inscripciones-form">
             <div className="form-label">Nombre:</div>
             <input className="form-input" type="text" name="nombre" value={formData.nombre} onChange={handleInputChange} required />
 
@@ -174,10 +273,8 @@ function Inscripciones() {
 
             <div className="form-label">Dirección:</div>
             <input className="form-input" type="text" name="direccion" value={formData.direccion} onChange={handleInputChange} required />
-            <button className="form-button" type="submit">Enviar</button>
-
           </form>
-            <div id="paypal-button-container-P-00970427S3164312KMY6JQ4I"></div>
+            <div className='paypal-button' id="paypal-button-container-P-9DN75489F5168674XMZUDKIA"></div>
       </article>
     </section>
     </>
