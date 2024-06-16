@@ -32,6 +32,7 @@ type Inscripcion= {
     telefono: string;
     direccion: string;
     dni: string;
+    fecha:{ seconds: number; nanoseconds: number };
   }
 
 type Seccion = "seccion1" | "seccion2" | "seccion3"; 
@@ -55,6 +56,16 @@ function Administracion() {
     const [mostrarFormularioGaleria, setMostrarFormularioGaleria] = useState(false);
     const [message, setMessage] = useState('');
     const [error, setError] = useState(false); 
+    const [searchTerm, setSearchTerm] = useState('');
+    const [orderByDate, setOrderByDate] = useState<'asc' | 'desc'>('desc');
+
+    const filteredNoticias = noticias.filter(noticia =>
+        noticia.titulo.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      
+      const sortedNoticias = orderByDate === 'asc'
+        ? filteredNoticias.sort((a, b) => a.fecha.seconds - b.fecha.seconds)
+        : filteredNoticias.sort((a, b) => b.fecha.seconds - a.fecha.seconds);
 
     setTimeout(() => {
         const messageElement = document.querySelector('.message');
@@ -98,6 +109,24 @@ function Administracion() {
         }
     };
 
+    const handleEliminarInscripcion = async (id: string, nombre: string) => {
+        const confirmacion = window.confirm("¿Estás seguro de que deseas eliminar la inscripción de " + nombre + "?");
+        if (!confirmacion) {
+            return;
+        }
+        try {
+            await deleteDoc(doc(firestore, 'inscripciones', id));
+            console.log("Inscripción eliminada correctamente");
+            setMessage('Inscripción eliminada correctamente.');
+            setError(false);
+            cargarInscripciones();
+        } catch (error) {
+            console.error('Error al eliminar inscripción:', error);
+            setMessage('No se ha podido eliminar la inscripción.');
+            setError(true);
+        }
+    };
+
     useEffect(() => {
         cargarInscripciones();
     }, []);
@@ -106,6 +135,10 @@ function Administracion() {
         cargarNoticias();
         cargarImagenes();
     }, []);
+
+    useEffect(() => {
+        cargarNoticias();
+    }, [searchTerm, orderByDate]);
 
     const cargarNoticias = async () => {
         try {
@@ -328,7 +361,6 @@ function Administracion() {
                     
                     <div className='header-administracion'>
                         <h1>{noticiaEditando ? 'Edita la noticia' : mostrarFormularioNoticia ? 'Nueva noticia' : 'Control de noticias'}</h1>
-                        
                         <button onClick={() => {
                         if (noticiaEditando) {
                             setNoticiaEditando(null);
@@ -339,9 +371,25 @@ function Administracion() {
                         { noticiaEditando || mostrarFormularioNoticia ? (<><i className="fa-solid fa-left-long"></i>&nbsp;&nbsp;&nbsp;{'Volver a la lista'} </> ): (<>{'Nueva noticia'}&nbsp;&nbsp;&nbsp; <i className="fa-solid fa-plus"></i></>)}
                         </button>
                     </div>
+                    <div className='filtros'>
+                        <div className="input-container">
+                        <i className="fas fa-search"></i>
+                        <input
+                            type="text"
+                            placeholder="Buscar por título..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                        </div>
+
+                        <select value={orderByDate} onChange={(e) => setOrderByDate(e.target.value as 'asc' | 'desc')}>
+                        <option value="desc">Fecha (Desc.)</option>
+                        <option value="asc">Fecha (Asc.)</option>
+                        </select>
+                    </div>
                     {!mostrarFormularioNoticia && !noticiaEditando &&(
                     <div className="lista-noticias">
-                        {noticias.map(noticia => (
+                        {sortedNoticias.map(noticia => (
                             <div key={noticia.id} className="noticia">
                                 <h4>{noticia.titulo}</h4>
                                 {noticia.contenido.split('\n').map((line, i) => {
@@ -510,6 +558,8 @@ function Administracion() {
                         <th>Dni</th>
                         <th>Teléfono</th>
                         <th>Dirección</th>
+                        <th>Fecha</th>
+                        <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -522,6 +572,27 @@ function Administracion() {
                             <td>{inscripcion.dni}</td>
                             <td>{inscripcion.telefono}</td>
                             <td>{inscripcion.direccion}</td>
+                            <td>
+                                {inscripcion.fecha && inscripcion.fecha.seconds
+                                    ? new Date(inscripcion.fecha.seconds * 1000).toLocaleDateString()
+                                    : 'Fecha no disponible'}
+                                </td>
+                            <td>
+                                <button className="del-button" type="button" onClick={() => handleEliminarInscripcion(inscripcion.id, inscripcion.nombre)}>
+                                    <span className="button__text">Eliminar</span>
+                                        <span className="button__icon">
+                                            <svg className="svg" height="512" viewBox="0 0 512 512" width="512" xmlns="http://www.w3.org/2000/svg">
+                                                <title></title>
+                                                <path d="M112,112l20,320c.95,18.49,14.4,32,32,32H348c17.67,0,30.87-13.51,32-32l20-320" style={{ fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px' }}></path>
+                                                <line style={{ fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeMiterlimit: '10', strokeWidth: '32px' }} x1="80" x2="432" y1="112" y2="112"></line>
+                                                <path d="M192,112V72h0a23.93,23.93,0,0,1,24-24h80a23.93,23.93,0,0,1,24,24h0v40" style={{ fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px' }}></path>
+                                                <line style={{ fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px' }} x1="256" x2="256" y1="176" y2="400"></line>
+                                                <line style={{ fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px' }} x1="184" x2="192" y1="176" y2="400"></line>
+                                                <line style={{ fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px' }} x1="328" x2="320" y1="176" y2="400"></line>
+                                            </svg>
+                                        </span>
+                                    </button>
+                            </td>
                         </tr>
                         ))}
                     </tbody>

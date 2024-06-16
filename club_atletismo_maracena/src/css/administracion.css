@@ -360,4 +360,8 @@
     flex-wrap: wrap;
     column-gap: 20px;
   }
-  
+  .administracion .filtros{
+    position:relative;
+    top:0;
+    margin-bottom: 10px;
+  }

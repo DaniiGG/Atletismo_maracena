@@ -149,8 +149,10 @@ function Inscripciones() {
         onApprove: async function(data:any, actions:any) {
           console.log('Subscription created with ID: ' + data.subscriptionID, actions); 
           try {
-            await addDoc(collection(firestore, 'inscripciones'), formData);
-            sendEmailReceipt(formData);
+            const formDataWithDate = { ...formData, fecha: new Date() };
+
+            await addDoc(collection(firestore, 'inscripciones'), formDataWithDate);
+            sendEmailReceipt(formDataWithDate);
             setMessage('¡Inscripción exitosa! Ya eres parte de nuestro club.');
             setError(false);
             setFormData({
