@@ -26,7 +26,8 @@ function Noticias() {
   const [imagenFullscreen, setImagenFullscreen] = useState<number | null>(null);
 
   const handleImagenClick = (index: number) => {
-    setImagenFullscreen(index);
+    const dataIndex = indexOfFirstItem + index;
+  setImagenFullscreen(dataIndex);
   };
 
   const handleCloseFullscreen = () => {
@@ -232,12 +233,12 @@ function Noticias() {
               <div className="fullscreen-overlay" onClick={handleCloseFullscreen}>
                 <div className="fullscreen-image-container">
                   <div>
-                    <img src={datos[imagenFullscreen].imagenes[datos[imagenFullscreen].imagenes.length - 1]} alt={datos[imagenFullscreen].etiqueta} />
+                    <img src={currentData[imagenFullscreen].imagenes[currentData[imagenFullscreen].imagenes.length - 1]} alt={currentData[imagenFullscreen].etiqueta} />
                     <button className="button">
                       <span className="X"></span>
                       <span className="Y"></span>
                     </button>
-                    <p>{datos[imagenFullscreen].etiqueta}</p>
+                    <p>{currentData[imagenFullscreen].etiqueta}</p>
                   </div>
                 </div>
               </div>

@@ -124,7 +124,7 @@ function Navegacion() {
                   </ul>
                 </>
                 ) : (
-                  <Link to="/login"  className="link" onClick={handleMenuClose}>Login</Link>
+                  <Link to="/login"  className="link" onClick={handleMenuClose}>Iniciar sesión</Link>
                 )}
               </li>
             </ul>

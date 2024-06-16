@@ -15,14 +15,17 @@ function HazañaDetalle() {
     const [editandoComentario, setEditandoComentario] = useState<string | null>(null);
     const [textoEditado, setTextoEditado] = useState('');
     const [esAdmin, setEsAdmin] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     useEffect(() => {
       const auth = getAuth();
       const unsubscribe = onAuthStateChanged(auth, (user) => {
         if (user) {
           setUser(user);
+          setIsLoggedIn(true);
         } else {
           setUser(null);
+          setIsLoggedIn(false);
         }
       });
       return () => unsubscribe();
@@ -191,7 +194,7 @@ function HazañaDetalle() {
                       return <p key={i}>{line}</p>;
                     }
                   })}
-                  <p>{new Date(noticia.fecha.seconds * 1000).toLocaleDateString()}</p>
+                  <p><b>{new Date(noticia.fecha.seconds * 1000).toLocaleDateString()}</b></p>
                   
                   </div>
                   <div className="comentarios">
@@ -233,11 +236,12 @@ function HazañaDetalle() {
                       <textarea
                         value={nuevoComentario}
                         onChange={handleComentarioChange}
-                        placeholder="Añadir un comentario"
+                        placeholder={isLoggedIn ? "Añadir un comentario" : "Inicia sesión para comentar"}
+                        disabled={!isLoggedIn}
                         onKeyDown={handleKeyDown}
                         className="textarea-comentario"
                       />
-                      <button type="submit" className="btn-comentario">Enviar</button>
+                      <button type="submit" className="btn-comentario" disabled={!isLoggedIn}>Enviar</button>
                     </form>
                   </div>
                 </article>
