@@ -313,7 +313,7 @@
   }
 
   table {
-    width: 99%;
+    width: 70%;
     border-collapse: collapse;
     margin-bottom: 20px;
   }
@@ -365,3 +365,10 @@
     top:0;
     margin-bottom: 10px;
   }
+  .administracion .lista-noticias .slide{
+    width: 50%;
+  }
+  .administracion .carousel-item img {
+    height: 45vh;
+    object-fit: cover;
+}

@@ -58,6 +58,11 @@ function Administracion() {
     const [error, setError] = useState(false); 
     const [searchTerm, setSearchTerm] = useState('');
     const [orderByDate, setOrderByDate] = useState<'asc' | 'desc'>('desc');
+    const [imagenesActuales, setImagenesActuales] = useState<string[]>([]);
+
+    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchTerm(e.target.value);
+    };
 
     const filteredNoticias = noticias.filter(noticia =>
         noticia.titulo.toLowerCase().includes(searchTerm.toLowerCase())
@@ -265,6 +270,7 @@ function Administracion() {
     };
     const handleEditarNoticia = (noticia: Noticia) => {
         setNoticiaEditando(noticia);
+        setImagenesActuales(noticia.imagenes);
     };
 
     const handleGuardarEdicionNoticia = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -273,7 +279,9 @@ function Administracion() {
             console.error('No hay ninguna noticia para editar');
             return;
         }
+    
         try {
+            // Actualizar solo el contenido de la noticia
             await updateDoc(doc(firestore, 'hazañas', noticiaEditando.id), {
                 titulo: noticiaEditando.titulo,
                 contenido: noticiaEditando.contenido,
@@ -281,7 +289,17 @@ function Administracion() {
                 fecha: noticiaEditando.fecha,
                 destacada: noticiaEditando.destacada,
             });
+    
+            // Actualizar imágenes si se han subido nuevas
+            if (nuevaNoticia.imagenes.length > 0) {
+                await updateDoc(doc(firestore, 'hazañas', noticiaEditando.id), {
+                    imagenes: nuevaNoticia.imagenes,
+                });
+            }
+    
             console.log('Noticia actualizada correctamente');
+            setMessage('Noticia actualizada correctamente.');
+            setError(false);
             setNoticiaEditando(null);
             cargarNoticias();
         } catch (error) {
@@ -387,11 +405,29 @@ function Administracion() {
                         <option value="asc">Fecha (Asc.)</option>
                         </select>
                     </div>
-                    {!mostrarFormularioNoticia && !noticiaEditando &&(
+                    {!mostrarFormularioNoticia && !noticiaEditando && (
                     <div className="lista-noticias">
                         {sortedNoticias.map(noticia => (
                             <div key={noticia.id} className="noticia">
                                 <h4>{noticia.titulo}</h4>
+                                <div id={`carousel-${noticia.id}`} className="carousel slide" data-bs-ride="carousel">
+                                    <div className="carousel-inner">
+                                        {noticia.imagenes.slice().reverse().map((imagen, index) => (
+                                            <div key={index} className={`carousel-item ${index === 0 ? 'active' : ''}`}>
+                                                <img src={imagen} className="d-block w-100" alt={`Imagen ${index + 1}`} />
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <button className="carousel-control-prev" type="button" data-bs-target={`#carousel-${noticia.id}`} data-bs-slide="prev">
+                                        <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span className="visually-hidden">Previous</span>
+                                    </button>
+                                    <button className="carousel-control-next" type="button" data-bs-target={`#carousel-${noticia.id}`} data-bs-slide="next">
+                                        <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span className="visually-hidden">Next</span>
+                                    </button>
+                                </div>
+                                {/* Resto de la información de la noticia */}
                                 {noticia.contenido.split('\n').map((line, i) => {
                                     if (line.trim().startsWith('- ')) {
                                         return <li key={i}>{line.trim().substring(2)}</li>;
@@ -404,30 +440,30 @@ function Administracion() {
                                 <p><strong>Destacada:</strong> {noticia.destacada ? 'Sí' : 'No'}</p>
                                 <div className='acciones'>
                                     <button className="edit-button" type="button" onClick={() => handleEditarNoticia(noticia)}>
-
-                                    <span className="button__text">Editar</span>
-                                    <span className="button__icon">
-                                    <svg className="svg-icon" fill="none" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><g stroke="#fff" strokeLinecap="round" strokeWidth="2"><path d="m20 20h-16"></path><path clipRule="evenodd" d="m14.5858 4.41422c.781-.78105 2.0474-.78105 2.8284 0 .7811.78105.7811 2.04738 0 2.82843l-8.28322 8.28325-3.03046.202.20203-3.0304z" fillRule="evenodd"></path></g></svg>
-                                    </span></button>
+                                        <span className="button__text">Editar</span>
+                                        <span className="button__icon">
+                                            <svg className="svg-icon" fill="none" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><g stroke="#fff" strokeLinecap="round" strokeWidth="2"><path d="m20 20h-16"></path><path clipRule="evenodd" d="m14.5858 4.41422c.781-.78105 2.0474-.78105 2.8284 0 .7811.78105.7811 2.04738 0 2.82843l-8.28322 8.28325-3.03046.202.20203-3.0304z" fillRule="evenodd"></path></g></svg>
+                                        </span>
+                                    </button>
                                     <button className="del-button" type="button" onClick={() => handleEliminarNoticia(noticia.id, noticia.titulo)}>
-                                    <span className="button__text">Eliminar</span>
-                                    <span className="button__icon">
-                                        <svg className="svg" height="512" viewBox="0 0 512 512" width="512" xmlns="http://www.w3.org/2000/svg">
-                                        <title></title>
-                                        <path d="M112,112l20,320c.95,18.49,14.4,32,32,32H348c17.67,0,30.87-13.51,32-32l20-320" style={{fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px'}}></path>
-                                        <line className="stroke:#fff;stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px" x1="80" x2="432" y1="112" y2="112"></line>
-                                        <path d="M192,112V72h0a23.93,23.93,0,0,1,24-24h80a23.93,23.93,0,0,1,24,24h0v40" style={{fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px'}}></path>
-                                        <line style={{fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px'}} x1="256" x2="256" y1="176" y2="400"></line>
-                                        <line style={{fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px'}} x1="184" x2="192" y1="176" y2="400"></line>
-                                        <line style={{fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px'}} x1="328" x2="320" y1="176" y2="400"></line>
-                                        </svg>
-                                    </span>
+                                        <span className="button__text">Eliminar</span>
+                                        <span className="button__icon">
+                                            <svg className="svg" height="512" viewBox="0 0 512 512" width="512" xmlns="http://www.w3.org/2000/svg">
+                                                <title></title>
+                                                <path d="M112,112l20,320c.95,18.49,14.4,32,32,32H348c17.67,0,30.87-13.51,32-32l20-320" style={{ fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px' }}></path>
+                                                <line className="stroke:#fff;stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px" x1="80" x2="432" y1="112" y2="112"></line>
+                                                <path d="M192,112V72h0a23.93,23.93,0,0,1,24-24h80a23.93,23.93,0,0,1,24,24h0v40" style={{ fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px' }}></path>
+                                                <line style={{ fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px' }} x1="256" x2="256" y1="176" y2="400"></line>
+                                                <line style={{ fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px' }} x1="184" x2="192" y1="176" y2="400"></line>
+                                                <line style={{ fill: 'none', stroke: '#fff', strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: '32px' }} x1="328" x2="320" y1="176" y2="400"></line>
+                                            </svg>
+                                        </span>
                                     </button>
                                 </div>
                             </div>
                         ))}
                     </div>
-                    )}
+                )}
                 {mostrarFormularioNoticia && (
                 <div className="noticia-formulario">
                     <form onSubmit={handleSubmitNoticia}>
@@ -540,6 +576,13 @@ function Administracion() {
                                         />
                                         Destacada
                                     </label>
+                                    <div className="imagenes-previas">
+                                        {imagenesActuales.map((imagen, index) => (
+                                            <img key={index} src={imagen} alt={`Imagen ${index}`} className="imagen-previa" />
+                                        ))}
+                                    </div>
+
+                                    <input type="file" accept="image/*" onChange={handleImageChangeNoticia} multiple className="input-imagen" />
                                     <button type="submit" className="boton-insertar">Guardar</button>
                                 </form>
                             </div>
@@ -548,6 +591,15 @@ function Administracion() {
 
                 <div className={seccionAbierta === "seccion2" ? 'submenu-visible' : 'submenu-hidden'}>
                 <h3>Lista de Usuarios</h3>
+                <div className="input-container">
+                    <i className="fas fa-search"></i>
+                    <input
+                        type="text"
+                        placeholder="Buscar por título..."
+                        value={searchTerm}
+                        onChange={handleSearch}
+                    />
+                </div><br></br>
                 <table>
                     <thead>
                         <tr>
@@ -563,7 +615,9 @@ function Administracion() {
                         </tr>
                     </thead>
                     <tbody>
-                        {inscripciones.map(inscripcion => (
+                    {inscripciones
+                    .filter(inscripcion => inscripcion.nombre.toLowerCase().includes(searchTerm.toLowerCase()))
+                    .map(inscripcion => (
                         <tr key={inscripcion.id}>
                             <td>{inscripcion.id}</td>
                             <td>{inscripcion.nombre}</td>
